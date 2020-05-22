@@ -1,0 +1,163 @@
+C:\git\salt-windows-msi>PowerShell Set-MpPreference -DisableRealtimeMonitoring $true
+
+C:\git\salt-windows-msi>PowerShell -ExecutionPolicy RemoteSigned -File build.cmd.ps1
+Found Salt v3000.1-1864-g45aaf1f10b (msi 30.00.1)
+Found target platform amd64
+Found Python 3
+Build started 12/05/2020 15:35:28.
+Project "C:\git\salt-windows-msi\msbuild.proj" on node 1 (wix target(s)).
+wix:
+
+      ****************** msbuild.proj   *********************
+      ******************          Configuration: Release
+      ******************      InstallerPlatform: x64
+      ******************  ProcessorArchitecture:
+      ******************               Platform: amd64
+      ******************         TargetPlatform: amd64
+      ******************                Version:
+      ******************         DisplayVersion: v3000.1-1864-g45aaf1f10b
+      ******************        InternalVersion: 30.00.1
+      ******************           BUILD_NUMBER: 0
+      ******************          PythonVersion: 3
+
+Project "C:\git\salt-windows-msi\msbuild.proj" (1) is building "C:\git\salt-windows-msi\salt-windows-msi.sln" (2) on node 1 (default targets).
+ValidateSolutionConfiguration:
+  Building solution configuration "Release|amd64".
+Project "C:\git\salt-windows-msi\salt-windows-msi.sln" (2) is building "C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\MinionConfigurationExtension.csproj" (3) on node 1 (default targets).
+CoreCompile:
+  C:\Program Files (x86)\MSBuild\14.0\bin\csc.exe /noconfig /nowarn:1701,1702 /nostdlib+ /errorreport:prompt /warn:4 /define:TRACE /highentropyva- /reference:"C:\Program Files (x86)\WiX Toolset v3.11\SDK\Micro
+  soft.Deployment.WindowsInstaller.dll" /reference:C:\Windows\Microsoft.NET\Framework\v2.0.50727\mscorlib.dll /reference:C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.dll /reference:C:\Windows\Microsoft
+  .NET\Framework\v2.0.50727\System.Xml.dll /reference:"c:\Program Files (x86)\WiX Toolset v3.11\bin\wix.dll" /debug:pdbonly /filealign:512 /optimize+ /out:obj\x86\Release\MinionConfigurationExtension.dll /targ
+  et:library /utf8output MinionConfiguration.cs MinionConfigurationUitilies.cs Properties\AssemblyInfo.cs
+  Using shared compilation with compiler from directory: C:\Program Files (x86)\MSBuild\14.0\Bin
+PackCustomAction:
+  "C:\Program Files (x86)\WiX Toolset v3.11\bin\..\sdk\MakeSfxCA.exe" "C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\obj\x86\Release\MinionConfigurationExtension.CA.dll" "C:\Program Files (x86)\Wi
+  X Toolset v3.11\bin\..\sdk\x86\SfxCA.dll" "C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\obj\x86\Release\MinionConfigurationExtension.dll" "C:\Program Files (x86)\WiX Toolset v3.11\SDK\Microsoft
+  .Deployment.WindowsInstaller.dll;c:\Program Files (x86)\WiX Toolset v3.11\bin\wix.dll;c:\Program Files (x86)\WiX Toolset v3.11\bin\Microsoft.Deployment.Resources.dll;C:\git\salt-windows-msi\wix.d\MinionConfi
+  gurationExtension\CustomAction.config"
+  Searching for custom action entry points in MinionConfigurationExtension.dll
+      Loaded dependent assembly: c:\Program Files (x86)\WiX Toolset v3.11\bin\wix.dll
+      Loaded dependent assembly: C:\Program Files (x86)\WiX Toolset v3.11\SDK\Microsoft.Deployment.WindowsInstaller.dll
+      ReadConfig_IMCAC=MinionConfigurationExtension!MinionConfigurationExtension.MinionConfiguration.ReadConfig_IMCAC
+      Uninstall_incl_Config_DECAC=MinionConfigurationExtension!MinionConfigurationExtension.MinionConfiguration.Uninstall_incl_Config_DECAC
+      Uninstall_excl_Config_DECAC=MinionConfigurationExtension!MinionConfigurationExtension.MinionConfiguration.Uninstall_excl_Config_DECAC
+      del_NSIS_DECAC=MinionConfigurationExtension!MinionConfigurationExtension.MinionConfiguration.del_NSIS_DECAC
+      WriteConfig_DECAC=MinionConfigurationExtension!MinionConfigurationExtension.MinionConfiguration.WriteConfig_DECAC
+  Searching for an embedded UI class in MinionConfigurationExtension.dll
+  Modifying SfxCA.dll stub
+  Copying file version info from C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\obj\x86\Release\MinionConfigurationExtension.dll to C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\obj\x8
+  6\Release\MinionConfigurationExtension.CA.dll
+  Packaging files
+      MinionConfigurationExtension.dll
+      Microsoft.Deployment.WindowsInstaller.dll
+      wix.dll
+      Microsoft.Deployment.Resources.dll
+      CustomAction.config
+  MakeSfxCA finished: C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\obj\x86\Release\MinionConfigurationExtension.CA.dll
+_CopyFilesMarkedCopyLocal:
+  Copying file from "C:\Program Files (x86)\WiX Toolset v3.11\SDK\Microsoft.Deployment.WindowsInstaller.dll" to "bin\Release\Microsoft.Deployment.WindowsInstaller.dll".
+  Copying file from "c:\Program Files (x86)\WiX Toolset v3.11\bin\wix.dll" to "bin\Release\wix.dll".
+  Copying file from "c:\Program Files (x86)\WiX Toolset v3.11\bin\Microsoft.Deployment.Resources.dll" to "bin\Release\Microsoft.Deployment.Resources.dll".
+  Copying file from "C:\Program Files (x86)\WiX Toolset v3.11\SDK\Microsoft.Deployment.WindowsInstaller.xml" to "bin\Release\Microsoft.Deployment.WindowsInstaller.xml".
+CopyFilesToOutputDirectory:
+  Copying file from "obj\x86\Release\MinionConfigurationExtension.dll" to "bin\Release\MinionConfigurationExtension.dll".
+  MinionConfigurationExtension -> C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\bin\Release\MinionConfigurationExtension.dll
+  Copying file from "C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\obj\x86\Release\MinionConfigurationExtension.CA.dll" to "bin\Release\MinionConfigurationExtension.CA.dll".
+  Copying file from "obj\x86\Release\MinionConfigurationExtension.pdb" to "bin\Release\MinionConfigurationExtension.pdb".
+Done Building Project "C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\MinionConfigurationExtension.csproj" (default targets).
+
+Project "C:\git\salt-windows-msi\salt-windows-msi.sln" (2) is building "C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj" (4) on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "obj\Release\".
+  Creating directory "bin\Release\".
+setVersionProperties:
+    ****************** msbuild.d/Minion.Common.targets ***************************
+    ******************  MSBuildProjectDirectory = C:\git\salt-windows-msi\wix.d\MinionMSI
+    ******************           TargetPlatform = amd64
+    ******************        InstallerPlatform = x64
+    ******************            Configuration = Release
+    ******************           TargetPlatform = amd64
+    ******************           DisplayVersion = v3000.1-1864-g45aaf1f10b
+    ******************          InternalVersion = 30.00.1
+    ******************                  Version =
+    ******************            PythonVersion = 3
+DistContent:
+  Looking for distribution content in C:\git\salt\pkg\windows\buildenv
+BuildDistFragments:
+  C:\Program Files (x86)\WiX Toolset v3.11\bin\Heat.exe dir C:\git\salt\pkg\windows\buildenv -cg dist -dr INSTALLFOLDER -ke -srd -var var.dist -nologo -sw5150 -gg -nologo -sw5150 -t C:\git\salt-windows-msi\msb
+  uild.d\BuildDistFragment.xsl -out dist-amd64.wxs
+Compile:
+  C:\Program Files (x86)\WiX Toolset v3.11\bin\candle.exe -ddist=C:\git\salt\pkg\windows\buildenv -dTargetPlatform=amd64 -dDisplayVersion=v3000.1-1864-g45aaf1f10b -dInternalVersion=30.00.1 -d"DevEnvDir=*Undefi
+  ned if not building from within Visual Studio*" -dSolutionDir=C:\git\salt-windows-msi\ -dSolutionExt=.sln -dSolutionFileName=salt-windows-msi.sln -dSolutionName=salt-windows-msi -dSolutionPath=C:\git\salt-wi
+  ndows-msi\salt-windows-msi.sln -dConfiguration=Release -dOutDir=bin\Release\ -dPlatform=x64 -dProjectDir=C:\git\salt-windows-msi\wix.d\MinionMSI\ -dProjectExt=.wixproj -dProjectFileName=MinionMSI.wixproj -dP
+  rojectName=MinionMSI -dProjectPath=C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj -dTargetDir=C:\git\salt-windows-msi\wix.d\MinionMSI\bin\Release\ -dTargetExt=.msi -dTargetFileName=Salt-Minion-Set
+  up.msi -dTargetName=Salt-Minion-Setup -dTargetPath=C:\git\salt-windows-msi\wix.d\MinionMSI\bin\Release\Salt-Minion-Setup.msi -dMinionConfigurationExtension.Configuration=Release -d"MinionConfigurationExtensi
+  on.FullConfiguration=Release|x86" -dMinionConfigurationExtension.Platform=x86 -dMinionConfigurationExtension.ProjectDir=C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\ -dMinionConfigurationExtens
+  ion.ProjectExt=.csproj -dMinionConfigurationExtension.ProjectFileName=MinionConfigurationExtension.csproj -dMinionConfigurationExtension.ProjectName=MinionConfigurationExtension -dMinionConfigurationExtensio
+  n.ProjectPath=C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\MinionConfigurationExtension.csproj -dMinionConfigurationExtension.TargetDir=C:\git\salt-windows-msi\wix.d\MinionConfigurationExtensio
+  n\bin\Release\ -dMinionConfigurationExtension.TargetExt=.dll -dMinionConfigurationExtension.TargetFileName=MinionConfigurationExtension.dll -dMinionConfigurationExtension.TargetName=MinionConfigurationExtens
+  ion -dMinionConfigurationExtension.TargetPath=C:\git\salt-windows-msi\wix.d\MinionConfigurationExtension\bin\Release\MinionConfigurationExtension.dll -out obj\Release\ -arch x64 -ext "C:\Program Files (x86)\
+  WiX Toolset v3.11\bin\\WixUtilExtension.dll" -ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixUIExtension.dll" -ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixNetFxExtension.dll" -nologo service
+  .wxs servicePython.wxs ProductUIsettings.wxs MinionConfigurationExtensionCA.wxs Product.wxs ProductUI.wxs dist-amd64.wxs
+  service.wxs
+C:\git\salt-windows-msi\wix.d\MinionMSI\service.wxs(9): warning CNDL1150: ServiceConfig functionality is documented in the Windows Installer SDK to "not [work] as expected." Consider replacing ServiceConfig wi
+th the WixUtilExtension ServiceConfig element. [C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj]
+  servicePython.wxs
+C:\git\salt-windows-msi\wix.d\MinionMSI\servicePython.wxs(9): warning CNDL1150: ServiceConfig functionality is documented in the Windows Installer SDK to "not [work] as expected." Consider replacing ServiceCon
+fig with the WixUtilExtension ServiceConfig element. [C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj]
+  ProductUIsettings.wxs
+  MinionConfigurationExtensionCA.wxs
+  Product.wxs
+  ProductUI.wxs
+  dist-amd64.wxs
+Link:
+  C:\Program Files (x86)\WiX Toolset v3.11\bin\Light.exe -out C:\git\salt-windows-msi\wix.d\MinionMSI\bin\Release\Salt-Minion-v3000.1-1864-g45aaf1f10b-Py3-AMD64.msi -pdbout C:\git\salt-windows-msi\wix.d\Minion
+  MSI\bin\Release\Salt-Minion-Setup.wixpdb -cultures:null -ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixUtilExtension.dll" -ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixUIExtension.dll" -ext
+  "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixNetFxExtension.dll" -sice:ICE03 -contentsfile obj\Release\MinionMSI.wixproj.BindContentsFileListnull.txt -outputsfile obj\Release\MinionMSI.wixproj.BindOutpu
+  tsFileListnull.txt -builtoutputsfile obj\Release\MinionMSI.wixproj.BindBuiltOutputsFileListnull.txt -wixprojectfile C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj -nologo obj\Release\service.wixob
+  j obj\Release\servicePython.wixobj obj\Release\ProductUIsettings.wixobj obj\Release\MinionConfigurationExtensionCA.wixobj obj\Release\Product.wixobj obj\Release\ProductUI.wixobj obj\Release\dist-amd64.wixobj
+  MinionMSI -> C:\git\salt-windows-msi\wix.d\MinionMSI\bin\Release\Salt-Minion-v3000.1-1864-g45aaf1f10b-Py3-AMD64.msi
+Done Building Project "C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj" (default targets).
+
+Done Building Project "C:\git\salt-windows-msi\salt-windows-msi.sln" (default targets).
+
+Done Building Project "C:\git\salt-windows-msi\msbuild.proj" (wix target(s)).
+
+
+Build succeeded.
+
+"C:\git\salt-windows-msi\msbuild.proj" (wix target) (1) ->
+"C:\git\salt-windows-msi\salt-windows-msi.sln" (default target) (2) ->
+"C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj" (default target) (4) ->
+(Compile target) ->
+  C:\git\salt-windows-msi\wix.d\MinionMSI\service.wxs(9): warning CNDL1150: ServiceConfig functionality is documented in the Windows Installer SDK to "not [work] as expected." Consider replacing ServiceConfig
+with the WixUtilExtension ServiceConfig element. [C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj]
+  C:\git\salt-windows-msi\wix.d\MinionMSI\servicePython.wxs(9): warning CNDL1150: ServiceConfig functionality is documented in the Windows Installer SDK to "not [work] as expected." Consider replacing ServiceC
+onfig with the WixUtilExtension ServiceConfig element. [C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj]
+
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:03:01.04
+
+
+####################### LIGHT
+
+-out C:\git\salt-windows-msi\wix.d\MinionMSI\bin\Release\Salt-Minion-v3000.1-1864-g45aaf1f10b-Py3-AMD64.msi 
+-pdbout C:\git\salt-windows-msi\wix.d\MinionMSI\bin\Release\Salt-Minion-Setup.wixpdb 
+-cultures:null 
+-ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixUtilExtension.dll" 
+-ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixUIExtension.dll" 
+-ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixNetFxExtension.dll" 
+-sice:ICE03 
+-contentsfile obj\Release\MinionMSI.wixproj.BindContentsFileListnull.txt 
+-outputsfile obj\Release\MinionMSI.wixproj.BindOutputsFileListnull.txt 
+-builtoutputsfile obj\Release\MinionMSI.wixproj.BindBuiltOutputsFileListnull.txt 
+-wixprojectfile C:\git\salt-windows-msi\wix.d\MinionMSI\MinionMSI.wixproj 
+-nologo obj\Release\service.wixobj 
+obj\Release\servicePython.wixobj 
+obj\Release\ProductUIsettings.wixobj 
+obj\Release\MinionConfigurationExtensionCA.wixobj 
+obj\Release\Product.wixobj 
+obj\Release\ProductUI.wixobj 
+obj\Release\dist-amd64.wixobj

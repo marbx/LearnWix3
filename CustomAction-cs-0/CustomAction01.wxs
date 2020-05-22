@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+
+    <!--  The IMMEDIATE CUSTOM ACTION (IMCAC) runs before the transaction and should not modify the system -->
+    <CustomAction
+      Id="ReadConfig_IMCAC"
+      DllEntry='ReadConfig_IMCAC'
+      BinaryKey='CustomAction01'
+      Execute='firstSequence'/>
+
+    <!--  The DEFERRED CUSTOM ACTION (DECAC) runs in a transaction and may modify the system -->
+    <CustomAction
+      Id="WriteConfig_DECAC"
+      DllEntry='WriteConfig_DECAC'
+      BinaryKey='CustomAction01'
+      Execute='deferred'
+      Return='check'
+      Impersonate='no'/>
+
+    <!--  Pass msi properties to the DEFERRED CUSTOM ACTION (DECAC)  -->
+    <CustomAction
+      Id="WriteConfig_CADH"
+      Property="WriteConfig_DECAC"
+      Value="hello1=[HELLO1];hello2=[HELLO2]" />
+
+    <Binary Id='CustomAction01' SourceFile='CustomAction01\obj\x86\Release\CustomAction01.CA.dll'/>
+
+  </Fragment>
+</Wix>

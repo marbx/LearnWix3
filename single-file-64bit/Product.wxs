@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Wix
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product
+      Name='Foobar 1.0'
+      Version='1.0.0'
+      Manufacturer='Acme Ltd.'
+      Language='1033'
+      UpgradeCode='fc67ab4e-2f1a-47bb-a64f-5c17ff8107da'
+      Id='*'
+      >
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine"/>
+    <MediaTemplate EmbedCab="yes"/>
+    <WixVariable Id="WixUILicenseRtf" Value="..\License.rtf"/>
+    <WixVariable Id="WixUIBannerBmp" Value="..\imgTop.png"/>
+    <WixVariable Id="WixUIDialogBmp" Value="..\imgLeft.png"/>
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFiles64Folder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLDIR' Name='Foobar 1.0'>
+            <Component Id='ReadMe.component'>
+              <File Id='ReadMe.fileID' Name='FoobarAppl10.txt' Source='FoobarAppl10.txt' KeyPath='yes'/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete'>
+      <ComponentRef Id='ReadMe.component'/>
+    </Feature>
+  </Product>
+</Wix>

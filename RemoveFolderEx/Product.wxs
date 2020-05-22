@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product
+      Name='Foobar 1.0'
+      Version='1.0.0'
+      Manufacturer='Acme Ltd.'
+      Language='1033'
+      UpgradeCode='c309905c-d7ed-4d3d-9004-4140469690df'
+      Id='*'
+      >
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLFOLDER' Name='Foobar 1.0'>
+            <Component Id='MainExecutable'>
+              <File Id='FoobarEXE' Name='FoobarAppl10.exe' Source='FoobarAppl10.exe' KeyPath='yes'/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id='Complete' Level='1'>
+      <ComponentRef Id='MainExecutable'/>
+      <ComponentRef Id="RemoveFolderEx_INSTALLFOLDER_Component"/>
+    </Feature>
+  </Product>
+
+  <Fragment Id="RemoveFolderEx_Fragment">
+    <?define RegDir="SOFTWARE\ACME\Foobar"?>
+    <?define RegVal_INSTALLFOLDER="RememberForRemoveFolderExINSTALLFOLDER"?>
+    <Property Id="INSTALLFOLDER">
+      <RegistrySearch Root="HKLM" Key="$(var.RegDir)" Type="raw"
+                Id="APPLICATIONFOLDER_REGSEARCH" Name="$(var.RegVal_INSTALLFOLDER)" />
+    </Property>
+
+    <DirectoryRef Id='INSTALLFOLDER'>
+      <Component Id="RemoveFolderEx_INSTALLFOLDER_Component" Guid="30d15bbf-44e7-4d95-876d-5b64bef6ab40">
+        <RegistryValue Root="HKLM" Key="$(var.RegDir)" Name="$(var.RegVal_INSTALLFOLDER)"
+                Type="string" Value="[INSTALLFOLDER]" KeyPath="yes"/>
+        <CreateFolder Directory="INSTALLFOLDER"/>
+        <util:RemoveFolderEx Property="INSTALLFOLDER" On="uninstall"/>
+        <RemoveFolder Id="INSTALLFOLDER" On="uninstall"/>
+      </Component>
+
+    </DirectoryRef>
+  </Fragment>
+
+</Wix>

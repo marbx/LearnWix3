@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product
+      Name='Foobar 1.0'
+      Version='1.0.0'
+      Manufacturer='Acme Ltd.'
+      Language='1033'
+      UpgradeCode='d3f3ac15-f57d-40da-9624-6021bf4dff0e'
+      Id='*'
+      >
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" />
+    <MediaTemplate EmbedCab="yes" />
+<!--    <Property Id="REMOVE_CONFIG" Value="0" Secure="yes"/>-->
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLFOLDER' Name='FoobarBin'>
+            <Component Id='MainExecutable'>
+              <File Id='FoobarEXE' Name='FoobarAppl10.exe' Source='FoobarAppl10.exe' KeyPath='yes'/>
+            </Component>
+          </Directory>
+          <Directory Id='CONFIGFOLDER' Name='FoobarConf'>
+            <Component Id="RmConfComponent" Transitive='yes' Guid="2f8c1338-e705-4765-9557-91aa6197c6d7">
+              <!--
+              Transitive='yes'  added because of
+              https://stackoverflow.com/questions/16037821/why-are-properties-ignored-on-uninstallation-if-they-have-not-been-set-on-insta
+              -->
+              <Condition>REMOVE_CONFIG</Condition>
+              <CreateFolder />
+              <RemoveFile Name="*.*" On="uninstall" Id="RmConfig"/>
+              <RemoveFolder Id="CONFIGFOLDER" On="uninstall"/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete'>
+      <ComponentRef Id='MainExecutable'/>
+      <ComponentRef Id='RmConfComponent'/>
+    </Feature>
+    <CustomActionRef Id='SaveCmdLineValue' />
+  </Product>
+
+<!-- Command line property scheduler  http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/  -->
+  <Fragment>
+    <CustomAction Id='SaveCmdLineValue' Property='CMDLINE_REMEMBERME'
+                  Value='[REMOVE_CONFIG]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValue' Property='REMOVE_CONFIG'
+                  Value='[CMDLINE_REMEMBERME]' Execute='firstSequence' />
+
+    <InstallUISequence>
+      <Custom Action='SaveCmdLineValue' Before='AppSearch' />
+      <Custom Action='SetFromCmdLineValue' After='AppSearch'>
+        CMDLINE_REMEMBERME
+      </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+      <Custom Action='SaveCmdLineValue' Before='AppSearch' />
+      <Custom Action='SetFromCmdLineValue' After='AppSearch'>
+        CMDLINE_REMEMBERME
+      </Custom>
+    </InstallExecuteSequence>
+  </Fragment>
+
+</Wix>

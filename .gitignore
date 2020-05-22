@@ -1,0 +1,7 @@
+_cache.dir/*
+**/*.dll
+**/*.log
+**/*.pdb
+**/*.msi
+**/*.wixobj
+**/*.wixpdb

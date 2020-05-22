@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Wix
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Name='Foobar 1.0' Version='1.0.0' Manufacturer='Acme Ltd.' Language='1033'
+      UpgradeCode='9d33bdcf-22fd-4cdf-95b4-d1ae294c97fa' Id='*'>
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine"/>
+    <MediaTemplate EmbedCab="yes"/>
+    <WixVariable Id="WixUILicenseRtf" Value="..\License.rtf"/>
+    <WixVariable Id="WixUIBannerBmp" Value="..\imgTop.png"/>
+    <WixVariable Id="WixUIDialogBmp" Value="..\imgLeft.png"/>
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLDIR' Name='Foobar 1.0'>
+            <Component Id='ReadMe.component'>
+              <File Id='ReadMe.fileID' Name='FoobarAppl10.txt' Source='FoobarAppl10.txt' KeyPath='yes'/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete'>
+      <ComponentRef Id='ReadMe.component'/>
+    </Feature>
+
+    <UI>
+      <UIRef     Id="WixUI_Mondo" />
+      <Publish Dialog="LicenseAgreementDlg"   Control="Next"   Event="NewDialog"   Value="HelloworldDlg" Order="3">Installed</Publish>
+      <Publish Dialog="HelloworldDlg"         Control="Next"   Event="NewDialog"   Value="VerifyReadyDlg">Installed</Publish>
+      <Publish Dialog="HelloworldDlg"         Control="Back"   Event="NewDialog"   Value="LicenseAgreementDlg">Installed</Publish>
+      <Publish Dialog="HelloworldDlg"         Control="Cancel" Event="SpawnDialog" Value="CancelDlg">Installed</Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog"   Value="HelloworldDlg">Installed</Publish>
+
+      <Dialog    Id="HelloworldDlg" Title="Hello World Dialog"    Width="370" Height="270" NoMinimize="yes">
+        <Control Type="Text"       Id="NameLabel" X="45"  Y="73"  Width="100" Height="15"  TabSkip="no" Text="&amp;Name of world:" />
+        <Control Type="Edit"       Id="NameEdit"  X="45"  Y="85"  Width="220" Height="18"  Property="NAME_OF_WORLD" Text="{110}" />
+        <Control Type="PushButton" Id="Back"      X="180" Y="243" Width="56"  Height="17"  Text="&amp;Back"/>
+        <Control Type="PushButton" Id="Next"      X="236" Y="243" Width="56"  Height="17"  Default="yes" Text="&amp;Next"/>
+        <Control Type="PushButton" Id="Cancel"    X="304" Y="243" Width="56"  Height="17"  Cancel="yes" Text="&amp;Cancel"/>
+      </Dialog>
+
+    </UI>
+
+  </Product>
+</Wix>

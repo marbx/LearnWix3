@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+  <Product
+      Name='Foobar 1.0'
+      Version='1.0.0'
+      Manufacturer='Acme Ltd.'
+      Language='1033'
+      UpgradeCode='8c014d5a-1067-4af6-b419-a97f48359b03'
+      Id='*'
+      >
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" />
+
+    <!-- Default values of public properties -->
+    <Property Id="HELLO1"               Value="world one"/>
+    <Property Id="HELLO2"               Value="world two"/>
+
+    <!--
+      Before MigrateFeatureStates:
+        action is placed before the transaction starts, coined "immediate"
+        you should not modifiy the system.
+      After InstallFiles:
+        action is placed after the transaction started, coined "deferred"
+        Deferred custom actions (DECAC) need custum action helper (CADH) to access msi properties
+        you may modifiy the system.
+      -->
+    <InstallExecuteSequence>
+      <Custom Action='ReadConfig_IMCAC'            Before='MigrateFeatureStates'        >NOT Installed</Custom>
+      <Custom Action='WriteConfig_CADH'
+              Before='WriteConfig_DECAC'                                                >NOT Installed</Custom>
+      <Custom Action='WriteConfig_DECAC'           After='InstallFiles'                 >NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+
+    <MediaTemplate EmbedCab="yes" />
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLDIR' Name='Foobar 1.0'>
+            <Component Id='MainExecutable'>
+              <File Id='FoobarEXE' Name='FoobarAppl10.exe' Source='FoobarAppl10.exe' KeyPath='yes'/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete' Level='1'>
+      <ComponentRef Id='MainExecutable' />
+    </Feature>
+  </Product>
+</Wix>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product
+      Name='Foobar 1.0'
+      Version='1.0.0'
+      Manufacturer='Acme Ltd.'
+      Language='1033'
+      UpgradeCode='cbe68b4d-9342-4ab9-b69d-65edb10fbd4a'
+      Id='*'
+      >
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" />
+    <MediaTemplate EmbedCab="yes" />
+    <CustomAction Id="delete_config_CAX" Script="vbscript">
+      on error resume next
+      CreateObject("Scripting.FileSystemObject").GetFolder(Session.Property("CONFIGFOLDER")).Delete(True)
+    </CustomAction>
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLFOLDER' Name='FoobarBin'>
+            <Component Id='MainExecutable'>
+              <File Id='FoobarEXE' Name='FoobarAppl10.exe' Source='FoobarAppl10.exe' KeyPath='yes'/>
+            </Component>
+          </Directory>
+          <Directory Id='CONFIGFOLDER' Name='FoobarConf'>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete'>
+      <ComponentRef Id='MainExecutable'/>
+    </Feature>
+    <InstallExecuteSequence>
+      <Custom Action='delete_config_CAX' After='RemoveFiles'>(REMOVE ~= "ALL") and REMOVE_CONFIG</Custom>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>
