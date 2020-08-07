@@ -1,17 +1,18 @@
 # RemoveFolderEx, no condition
 
-### enjoy uninstall log with REMOVE_CONFIG
+### TODO Error in install log
 
-Action start 10:29:38: WixRemoveFoldersEx.
-WixRemoveFoldersEx:  Recursing path: C:\Program Files (x86)\Acme\Foobar 1.0\ for row: wrfC080834F25891F84E6EEDCAECFC86E7A.
-Action ended 10:29:38: WixRemoveFoldersEx. Return value 1.
 
-### ignore ugly install log and uninstall log
-
-Action start 10:04:58: WixRemoveFoldersEx.
-WixRemoveFoldersEx:  Error 0x80070057: Missing folder property: INSTALLFOLDER for row: wrfC080834F25891F84E6EEDCAECFC86E7A
+Action start 14:49:44: WixRemoveFoldersEx.
+WixRemoveFoldersEx:  Error 0x80070057: Missing folder property: INSTALLFOLDER for row: *
 CustomAction WixRemoveFoldersEx returned actual error code 1603 but will be translated to success due to continue marking
-Action ended 10:04:58: WixRemoveFoldersEx. Return value 1.
+Action ended 14:49:44: WixRemoveFoldersEx. Return value 1.
+
+This is the uninstall log:
+
+Action start 14:50:23: WixRemoveFoldersEx.
+MSI (s) (D4!EC) [14:50:23:275]: PROPERTY CHANGE: Adding _INSTALLFOLDER_0 property. Its value is 'C:\Program Files (x86)\Acme\Foobar\'.
+WixRemoveFoldersEx:  Recursing path: C:\Program Files (x86)\Acme\Foobar\ for row: wrf9D9CFBC3B0FA4D95F165F0F98EA95554.
 
 
 ### links regarding RemoveFolderEx

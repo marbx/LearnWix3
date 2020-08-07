@@ -16,7 +16,7 @@
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='Acme' Name='Acme'>
-          <Directory Id='INSTALLFOLDER' Name='Foobar 1.0'>
+          <Directory Id='INSTALLFOLDER' Name='Foobar'>
             <Component Id='MainExecutable'>
               <File Id='FoobarEXE' Name='FoobarAppl10.exe' Source='FoobarAppl10.exe' KeyPath='yes'/>
             </Component>
