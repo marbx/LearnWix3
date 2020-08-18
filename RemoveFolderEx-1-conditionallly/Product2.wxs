@@ -14,6 +14,16 @@
     <MediaTemplate EmbedCab="yes" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
+    <Property     Id="echo_always"       Value='"cmd.exe" /C echo echoed always'/>
+    <CustomAction Id="echo_always"       Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
+    <Property     Id="echo_on_upgrade"   Value='"cmd.exe" /C echo echoed on upgrade'/>
+    <CustomAction Id="echo_on_upgrade"   Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
+
+    <InstallExecuteSequence>
+      <Custom Action="echo_always"       After='InstallInitialize'>1</Custom>
+      <Custom Action="echo_on_upgrade"   After='InstallInitialize'>WIX_UPGRADE_DETECTED</Custom>
+    </InstallExecuteSequence>
+
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='Acme' Name='Acme'>
