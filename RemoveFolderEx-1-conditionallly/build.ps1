@@ -10,15 +10,18 @@ function CheckExitCode($txt) {
 }
 
 
-Write-Host -ForegroundColor Yellow "Precompiling wxs to wixobj..."
+Write-Host -ForegroundColor Yellow "Precompiling 1 wxs to wixobj..."
 & "$($ENV:WIX)bin\candle.exe" `
+    "-dInternalVersion=1.0.0" `
+    "-dFoobarexefile=FoobarAppl10.exe" `
     -nologo `
     -sw1150 `
     -ddist=".\" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
-    Product_1.wxs
+    -out "$pwd\Product1.wixobj" `
+    Product.wxs
 CheckExitCode "candle"
 
 
@@ -28,19 +31,22 @@ Write-Host -ForegroundColor Yellow "Linking wixobj to msi..."
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
-    Product_1.wixobj
+    Product1.wixobj
 CheckExitCode "light"
 
 
-Write-Host -ForegroundColor Yellow "Precompiling wxs to wixobj..."
+Write-Host -ForegroundColor Yellow "Precompiling 2 wxs to wixobj..."
 & "$($ENV:WIX)bin\candle.exe" `
+    "-dInternalVersion=2.0.0" `
+    "-dFoobarexefile=FoobarAppl20.exe" `
     -nologo `
     -sw1150 `
     -ddist=".\" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
-    Product_2.wxs
+    -out "$pwd\Product2.wixobj" `
+    Product.wxs
 CheckExitCode "candle"
 
 Write-Host -ForegroundColor Yellow "Linking wixobj to msi..."
@@ -49,7 +55,7 @@ Write-Host -ForegroundColor Yellow "Linking wixobj to msi..."
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
-    Product_2.wixobj
+    Product2.wixobj
 CheckExitCode "light"
 
 

@@ -4,7 +4,7 @@
     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product
       Name='Foobar'
-      Version='2.0.0'
+      Version="$(var.InternalVersion)"
       Manufacturer='Acme Ltd.'
       Language='1033'
       UpgradeCode='802c19d8-ace7-4f76-bf00-7132df6a92a9'
@@ -30,7 +30,7 @@
           <Directory Id='INSTALLFOLDER' Name='Foobar'>
             <Directory Id='BINFOLDER' Name='bin'>
               <Component Id='MainExecutable'>
-                <File Id='FoobarEXE' Name='FoobarAppl20.exe' Source='FoobarAppl20.exe' KeyPath='yes'/>
+                <File Id='FoobarEXE' Name="$(var.Foobarexefile)" Source="$(var.Foobarexefile)" KeyPath='yes'/>
               </Component>
             </Directory>
             <Directory Id='VARFOLDER' Name='var'>
