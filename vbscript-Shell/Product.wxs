@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product
+      Name='Foobar 1.0'
+      Version='1.0.0'
+      Manufacturer='Acme Ltd.'
+      Language='1033'
+      UpgradeCode='1a601f03-7566-463b-a254-45d1d4ade42d'
+      Id='*'
+      >
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" />
+    <CustomAction Id="Lalala_CAX" Script="vbscript">
+Set objShell = CreateObject("WScript.Shell")
+'intReturn = objShell.Run("cmd /K echo About to sleep 5 seconds" , 1, true)
+'intReturn = objShell.Run("cmd /K PING -n 5 127.0.0.1>nul" , 1, true)
+'intReturn = objShell.Run("cmd /K echo Slept 5 seconds " , 1, true)
+intReturn = objShell.Run("cmd /C PING -n 10 127.0.0.1>nul" , 0, true)
+    </CustomAction>
+    <MediaTemplate EmbedCab="yes" />
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLFOLDER' Name='FoobarBin'>
+            <Component Id='MainExecutable'>
+              <File Id='FoobarEXE' Name='FoobarAppl10.exe' Source='FoobarAppl10.exe' KeyPath='yes'/>
+            </Component>
+          </Directory>
+          <Directory Id='CONFIGFOLDER' Name='FoobarConf'>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete'>
+      <ComponentRef Id='MainExecutable'/>
+    </Feature>
+    <InstallExecuteSequence>
+      <Custom Action='Lalala_CAX'        Before='InstallInitialize'>Not Installed</Custom>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>
