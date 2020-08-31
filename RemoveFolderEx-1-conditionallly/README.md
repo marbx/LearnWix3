@@ -5,6 +5,8 @@ Leave lifetime data on upgrade, remove on uninstall in `C:\Program Files (x86)\A
 
 Remove lifetime data on both upgrade and uninstall in `C:\Program Files (x86)\Acme\Foobar\bin`
 
+DOES NOT WORK because component is never installed so component will never be removed
+
 
 ### TODO var 1 2 for Product.wxs
 

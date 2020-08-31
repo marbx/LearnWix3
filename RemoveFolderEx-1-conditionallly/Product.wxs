@@ -44,6 +44,7 @@
       <ComponentRef Id='MainExecutable'/>
       <Feature     Level="0" Id="Only_on_uninstall_not_upgrade" Display="hidden" AllowAdvertise="no">
         <Condition Level="1">REMOVE ~= "ALL"</Condition>
+        <!-- DOES NOT WORK because it is never installed it will never be removed -->
         <ComponentRef Id="RemoveFolderEx_VARFOLDER_Component"/>
       </Feature>
       <ComponentRef Id="RemoveFolderEx_BINFOLDER_Component"/>
