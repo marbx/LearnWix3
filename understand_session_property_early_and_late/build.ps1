@@ -16,7 +16,6 @@ function CheckExitCode($txt) {
 Write-Host -ForegroundColor Yellow "Precompiling wxs to wixobj..."
 & "$($ENV:WIX)bin\candle.exe" `
     -nologo `
-    -sw1150 `
     -ddist=".\" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
@@ -24,9 +23,10 @@ Write-Host -ForegroundColor Yellow "Precompiling wxs to wixobj..."
     Product.wxs
 CheckExitCode "candle"
 
-
+# warning LGHT1076 : ICE03: String overflow (greater than length permitted in column); Table: CustomAction
 Write-Host -ForegroundColor Yellow "Linking wixobj to msi..."
 & "$($ENV:WIX)bin\light" `
+    -sw1076 `
     -out "$pwd\Product.msi" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
