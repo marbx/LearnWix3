@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product
+      Name='Foobar'
+      Version="$(var.InternalVersion)"
+      Manufacturer='Acme Ltd.'
+      Language='1033'
+      UpgradeCode='3e15ac24-ca1b-4b43-8ae8-229dd7414e62'
+      Id='*'
+      >
+    <Package InstallerVersion='500' Compressed='yes' InstallScope="perMachine" />
+    <MediaTemplate EmbedCab="yes" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <Property     Id="echo_always"            Value='"cmd.exe" /C echo echoed always'/>
+    <Property     Id="echo_on_upgrade"        Value='"cmd.exe" /C echo echoed on upgrade'/>
+    <Property     Id="echo_on_not_upgrade"    Value='"cmd.exe" /C echo echoed on not upgrade'/>
+    <Property     Id="echo_on_uninstall1"     Value='"cmd.exe" /C echo echoed on uninstall1  (REMOVE ~= "ALL")'/>
+    <Property     Id="echo_on_uninstall2"     Value='"cmd.exe" /C echo echoed on uninstall2  NOT WIX_UPGRADE_DETECTED AND (REMOVE ~= "ALL")'/>
+    <CustomAction Id="echo_always"            Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
+    <CustomAction Id="echo_on_upgrade"        Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
+    <CustomAction Id="echo_on_not_upgrade"    Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
+    <CustomAction Id="echo_on_uninstall1"     Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
+    <CustomAction Id="echo_on_uninstall2"     Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
+
+    <InstallExecuteSequence>
+      <Custom Action="echo_always"            After='InstallInitialize'>1</Custom>
+      <Custom Action="echo_on_upgrade"        After='InstallInitialize'>WIX_UPGRADE_DETECTED</Custom>
+      <Custom Action="echo_on_not_upgrade"    After='InstallInitialize'>NOT WIX_UPGRADE_DETECTED</Custom>
+      <Custom Action="echo_on_uninstall1"     After='InstallInitialize'>REMOVE ~= "ALL"</Custom>
+      <Custom Action="echo_on_uninstall2"     After='InstallInitialize'>(NOT WIX_UPGRADE_DETECTED) AND (REMOVE ~= "ALL")</Custom>
+    </InstallExecuteSequence>
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLFOLDER' Name='Foobar'>
+            <Directory Id='BINFOLDER' Name='bin'>
+              <Component Id='MainExecutable'>
+                <File Id='FoobarEXE' Name="$(var.Foobarexefile)" Source="$(var.Foobarexefile)" KeyPath='yes'/>
+              </Component>
+            </Directory>
+            <Directory Id='VARFOLDER' Name='var'>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id='Complete' Level='1'>
+      <ComponentRef Id='MainExecutable'/>
+    </Feature>
+  </Product>
+</Wix>
