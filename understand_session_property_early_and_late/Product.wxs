@@ -6,6 +6,7 @@
       Manufacturer='Acme Ltd.'
       Language='1033'
       Id='*'
+      UpgradeCode='2e5225fc-f392-4d9a-8b42-ff32c650ce1a'
       >
     <Package InstallerVersion='500' Compressed='yes' InstallScope="perMachine" />
     <CustomAction Id="show_InstallFolder_early" Script="vbscript">
