@@ -1,1 +1,1 @@
-msiexec /i Product2.msi  /log Product2-install.log
+msiexec /i Product2.msi  /l*v Product2-install.log

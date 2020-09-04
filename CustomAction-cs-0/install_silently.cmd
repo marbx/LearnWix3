@@ -1,1 +1,1 @@
-msiexec /i Product.msi hello1="one again" /qb! /log Product.log
+msiexec /i Product.msi hello1="one again" /qb! /l*v Product.log

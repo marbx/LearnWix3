@@ -1,1 +1,1 @@
-msiexec /x Product.msi /qb! /log Product-uninstall.log
+msiexec /x Product.msi /qb! /l*v Product-uninstall.log
