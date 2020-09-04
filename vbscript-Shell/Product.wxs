@@ -5,37 +5,27 @@
       Version='1.0.0'
       Manufacturer='Acme Ltd.'
       Language='1033'
+      UpgradeCode='1a601f03-7566-463b-a254-45d1d4ade42d'
       Id='*'
       >
-    <Package InstallerVersion='500' Compressed='yes' InstallScope="perMachine" />
-    <CustomAction Id="show_InstallFolder_early" Script="vbscript">
-Set fso = CreateObject("Scripting.FileSystemObject")
-Session.Property("show_InstallFolder_early_debug") =  Session.Property("INSTALLFOLDER")
-if fso.FolderExists(Session.Property("INSTALLFOLDER")) then
-    Session.Property("show_InstallFolder_early_debug") = "found"
-Else
-    Session.Property("show_InstallFolder_early_debug") = "NOT found"
-end if
-Session.Property("show_InstallFolder_early_debug") = "ended"
-    </CustomAction>
-    <CustomAction Id="show_InstallFolder_late" Script="vbscript">
-Set fso = CreateObject("Scripting.FileSystemObject")
-Session.Property("show_InstallFolder_late_debug") =  Session.Property("INSTALLFOLDER")
-if fso.FolderExists(Session.Property("INSTALLFOLDER")) then
-    Session.Property("show_InstallFolder_late_debug") = "found"
-Else
-    Session.Property("show_InstallFolder_late_debug") = "NOT found"
-end if
-Session.Property("show_InstallFolder_late_debug") = "ended"
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" />
+    <CustomAction Id="Lalala_CAX" Script="vbscript">
+Set objShell = CreateObject("WScript.Shell")
+'intReturn = objShell.Run("cmd /K echo About to sleep 5 seconds" , 1, true)
+'intReturn = objShell.Run("cmd /K PING -n 5 127.0.0.1>nul" , 1, true)
+'intReturn = objShell.Run("cmd /K echo Slept 5 seconds " , 1, true)
+intReturn = objShell.Run("cmd /C PING -n 10 127.0.0.1>nul" , 0, true)
     </CustomAction>
     <MediaTemplate EmbedCab="yes" />
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='Acme' Name='Acme'>
-          <Directory Id='INSTALLFOLDER' Name='Foobar'>
+          <Directory Id='INSTALLFOLDER' Name='FoobarBin'>
             <Component Id='MainExecutable'>
               <File Id='FoobarEXE' Name='FoobarAppl10.exe' Source='FoobarAppl10.exe' KeyPath='yes'/>
             </Component>
+          </Directory>
+          <Directory Id='CONFIGFOLDER' Name='FoobarConf'>
           </Directory>
         </Directory>
       </Directory>
@@ -44,8 +34,7 @@ Session.Property("show_InstallFolder_late_debug") = "ended"
       <ComponentRef Id='MainExecutable'/>
     </Feature>
     <InstallExecuteSequence>
-      <Custom Action='show_InstallFolder_early'       After='InstallInitialize'>1</Custom>
-      <Custom Action='show_InstallFolder_late'        After='InstallFinalize'  >1</Custom>
+      <Custom Action='Lalala_CAX'        Before='InstallInitialize'>Not Installed</Custom>
     </InstallExecuteSequence>
   </Product>
 </Wix>
