@@ -16,6 +16,7 @@ Write-Host -ForegroundColor Yellow "Precompiling 1 wxs to wixobj..."
     "-dFoobarexefile=FoobarAppl10.exe" `
     -nologo `
     -sw1150 `
+    -arch x64 `
     -ddist=".\" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `

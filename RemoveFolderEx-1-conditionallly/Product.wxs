@@ -10,26 +10,19 @@
       UpgradeCode='802c19d8-ace7-4f76-bf00-7132df6a92a9'
       Id='*'
       >
-    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" />
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" Platform="x64" />
     <MediaTemplate EmbedCab="yes" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
-    <Property     Id="echo_always"       Value='"cmd.exe" /C echo echoed always'/>
-    <CustomAction Id="echo_always"       Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
-    <Property     Id="echo_on_upgrade"   Value='"cmd.exe" /C echo echoed on upgrade'/>
-    <CustomAction Id="echo_on_upgrade"   Impersonate="no" Execute="deferred" Return="check" BinaryKey="WixCA" DllEntry="WixQuietExec64" />
-
     <InstallExecuteSequence>
-      <Custom Action="echo_always"       After='InstallInitialize'>1</Custom>
-      <Custom Action="echo_on_upgrade"   After='InstallInitialize'>WIX_UPGRADE_DETECTED</Custom>
     </InstallExecuteSequence>
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
-      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+      <Directory Id='ProgramFiles64Folder' Name='PFiles'>
         <Directory Id='Acme' Name='Acme'>
           <Directory Id='INSTALLFOLDER' Name='Foobar'>
             <Directory Id='BINFOLDER' Name='bin'>
-              <Component Id='MainExecutable'>
+              <Component Id='MainExecutable' Win64='yes'>
                 <File Id='FoobarEXE' Name="$(var.Foobarexefile)" Source="$(var.Foobarexefile)" KeyPath='yes'/>
               </Component>
             </Directory>
@@ -40,13 +33,9 @@
       </Directory>
     </Directory>
 
-    <Feature Id='Complete' Level='1'>
+    <Feature Id='Complete' ConfigurableDirectory="VARFOLDER">
       <ComponentRef Id='MainExecutable'/>
-      <Feature     Level="0" Id="Only_on_uninstall_not_upgrade" Display="hidden" AllowAdvertise="no">
-        <Condition Level="1">REMOVE ~= "ALL"</Condition>
-        <!-- DOES NOT WORK because it is never installed it will never be removed -->
-        <ComponentRef Id="RemoveFolderEx_VARFOLDER_Component"/>
-      </Feature>
+      <ComponentRef Id="RemoveFolderEx_VARFOLDER_Component"/>
       <ComponentRef Id="RemoveFolderEx_BINFOLDER_Component"/>
     </Feature>
   </Product>
@@ -65,21 +54,18 @@
     </Property>
 
     <DirectoryRef Id='BINFOLDER'>
-      <Component Id="RemoveFolderEx_BINFOLDER_Component" Guid="331a941c-4430-4f11-ba89-6f3dfad24aef">
+      <Component Id="RemoveFolderEx_BINFOLDER_Component" Guid="b70cd37e-b13b-4c1f-b1f0-095a695c27c8" Win64='yes'>
         <RegistryValue Root="HKLM" Key="$(var.RegDir)" Name="$(var.RegVal_BINFOLDER)"
                 Type="string" Value="[BINFOLDER]" KeyPath="yes"/>
-        <CreateFolder Directory="BINFOLDER"/>
-        <util:RemoveFolderEx Property="BINFOLDER" On="uninstall"/>  <!-- uninstall INCLUDES UPGRADE! -->
-        <RemoveFolder Id="BINFOLDER" On="uninstall"/>
+        <util:RemoveFolderEx Property="BINFOLDER" On="uninstall"/>  <!-- uninstall INCLUDES UPGRADE -->
       </Component>
     </DirectoryRef>
     <DirectoryRef Id='VARFOLDER'>
-      <Component Id="RemoveFolderEx_VARFOLDER_Component" Guid="304236f6-56c1-44d8-8312-e1e096a01824">
+      <Component Id="RemoveFolderEx_VARFOLDER_Component" Guid="dc2fd333-9e32-4e5b-b92d-c63e88eafb06" Win64='yes'>
+        <Condition>REMOVE~="ALL"</Condition>       <!--  WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE OR     previous version detected and not exectued during its uninstall -->
         <RegistryValue Root="HKLM" Key="$(var.RegDir)" Name="$(var.RegVal_VARFOLDER)"
                 Type="string" Value="[VARFOLDER]" KeyPath="yes"/>
-        <CreateFolder Directory="VARFOLDER"/>
-        <util:RemoveFolderEx Property="VARFOLDER" On="uninstall"/>  <!-- uninstall INCLUDES UPGRADE! -->
-        <RemoveFolder Id="VARFOLDER" On="uninstall"/>
+        <util:RemoveFolderEx Property="VARFOLDER" On="uninstall"/>  <!-- uninstall INCLUDES UPGRADE -->
       </Component>
     </DirectoryRef>
 

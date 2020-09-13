@@ -1,1 +1,1 @@
-dir /b /s "C:\Program Files (x86)\Acme"
+if exist "C:\Program Files\Acme" dir /b /s "C:\Program Files\Acme"
