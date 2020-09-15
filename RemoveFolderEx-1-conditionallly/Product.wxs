@@ -61,8 +61,13 @@
       </Component>
     </DirectoryRef>
     <DirectoryRef Id='VARFOLDER'>
-      <Component Id="RemoveFolderEx_VARFOLDER_Component" Guid="dc2fd333-9e32-4e5b-b92d-c63e88eafb06" Win64='yes'>
-        <Condition>REMOVE~="ALL"</Condition>       <!--  WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE OR     previous version detected and not exectued during its uninstall -->
+      <Component Id="RemoveFolderEx_VARFOLDER_Component" Guid="301efe0b-a8b3-419d-b787-3478eb56e252" Win64='yes'>
+        <Condition>NOT WIX_UPGRADE_DETECTED AND Installed</Condition>
+        <!--
+          NOT WIX_UPGRADE_DETECTED AND Installed
+           REMOVE~="ALL"
+        NOT UPGRADINGPRODUCTCODE
+        -->
         <RegistryValue Root="HKLM" Key="$(var.RegDir)" Name="$(var.RegVal_VARFOLDER)"
                 Type="string" Value="[VARFOLDER]" KeyPath="yes"/>
         <util:RemoveFolderEx Property="VARFOLDER" On="uninstall"/>  <!-- uninstall INCLUDES UPGRADE -->
