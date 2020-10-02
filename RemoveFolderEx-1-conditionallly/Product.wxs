@@ -18,22 +18,18 @@
     </InstallExecuteSequence>
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
-      <Directory Id='ProgramFiles64Folder' Name='PFiles'>
-        <Directory Id='Acme' Name='Acme'>
-          <Directory Id='INSTALLFOLDER' Name='Foobar'>
-            <Directory Id='BINFOLDER' Name='bin'>
-              <Component Id='MainExecutable' Win64='yes'>
-                <File Id='FoobarEXE' Name="$(var.Foobarexefile)" Source="$(var.Foobarexefile)" KeyPath='yes'/>
-              </Component>
-            </Directory>
-            <Directory Id='VARFOLDER' Name='var'>
-            </Directory>
-          </Directory>
+      <Directory Id='INSTALLFOLDER' Name='AcmeFoobar'>
+        <Directory Id='BINFOLDER' Name='bin'>
+          <Component Id='MainExecutable' Win64='yes' Guid="108c2034-c33a-4d0f-a82f-ebeac2a840cb">
+            <File Id='FoobarEXE' Name="$(var.Foobarexefile)" Source="$(var.Foobarexefile)" KeyPath='yes'/>
+          </Component>
+        </Directory>
+        <Directory Id='VARFOLDER' Name='var'>
         </Directory>
       </Directory>
     </Directory>
 
-    <Feature Id='Complete' ConfigurableDirectory="VARFOLDER">
+    <Feature Id='Complete'>
       <ComponentRef Id='MainExecutable'/>
       <ComponentRef Id="RemoveFolderEx_VARFOLDER_Component"/>
       <ComponentRef Id="RemoveFolderEx_BINFOLDER_Component"/>
@@ -41,7 +37,7 @@
   </Product>
 
   <Fragment Id="RemoveFolderEx_Fragment">
-    <?define RegDir="SOFTWARE\ACME\Foobar"?>
+    <?define RegDir="SOFTWARE\AcmeFoobar"?>
     <?define RegVal_BINFOLDER="RememberForRemoveFolderEx_BINFOLDER"?>
     <?define RegVal_VARFOLDER="RememberForRemoveFolderEx_VARFOLDER"?>
     <Property Id="BINFOLDER">
@@ -60,21 +56,19 @@
         <util:RemoveFolderEx Property="BINFOLDER" On="uninstall"/>  <!-- uninstall INCLUDES UPGRADE -->
       </Component>
     </DirectoryRef>
+
+    <!--
+      NOT WIX_UPGRADE_DETECTED AND Installed
+        REMOVE~="ALL"
+    NOT UPGRADINGPRODUCTCODE
+    -->
     <DirectoryRef Id='VARFOLDER'>
       <Component Id="RemoveFolderEx_VARFOLDER_Component" Guid="301efe0b-a8b3-419d-b787-3478eb56e252" Win64='yes'>
-        <Condition>NOT WIX_UPGRADE_DETECTED AND Installed</Condition>
-        <!--
-          NOT WIX_UPGRADE_DETECTED AND Installed
-           REMOVE~="ALL"
-        NOT UPGRADINGPRODUCTCODE
-        -->
+        <Condition>NOT WIX_UPGRADE_DETECTED</Condition>
         <RegistryValue Root="HKLM" Key="$(var.RegDir)" Name="$(var.RegVal_VARFOLDER)"
                 Type="string" Value="[VARFOLDER]" KeyPath="yes"/>
         <util:RemoveFolderEx Property="VARFOLDER" On="uninstall"/>  <!-- uninstall INCLUDES UPGRADE -->
       </Component>
     </DirectoryRef>
-
-
   </Fragment>
-
 </Wix>

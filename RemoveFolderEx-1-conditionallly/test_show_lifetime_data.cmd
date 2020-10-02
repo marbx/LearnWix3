@@ -1,1 +1,1 @@
-if exist "C:\Program Files\Acme" dir /b /s "C:\Program Files\Acme"
+if exist "C:\AcmeFoobar" dir /b /s "C:\AcmeFoobar"
