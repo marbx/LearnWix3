@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Wix
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product
+      Name='LearnQuietExec64'
+      Version='1.0.0'
+      Manufacturer='Acme Ltd.'
+      Language='1033'
+      UpgradeCode='3b05e8f9-a43d-4260-bca8-2e891fb006a1'
+      Id='*'
+      >
+    <Package InstallerVersion='500' Compressed='yes' InstallScope="perMachine"/>
+    <MediaTemplate EmbedCab="yes"/>
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFiles64Folder' Name='PFiles'>
+        <Directory Id='Acme' Name='Acme'>
+          <Directory Id='INSTALLDIR' Name='Foobar'>
+            <Component Id='ReadMe.component'>
+              <File Id='ReadMe.fileID' Name='FoobarAppl10.txt' Source='FoobarAppl10.txt' KeyPath='yes'/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id='Complete'>
+      <ComponentRef Id='ReadMe.component'/>
+    </Feature>
+
+    <Property Id="WixQuietExec64CmdLine" Value='"C:\Windows\System32\cmd.exe" /c echo oooo immediate 1'/>
+    <CustomAction Id="QtExecExample" BinaryKey="WixCA" DllEntry="WixQuietExec64" Execute="immediate" Return="check"/>
+
+    <SetProperty     Value='"C:\Windows\System32\cmd.exe" /c echo oooo deffered 1'
+                  Id="moon1"
+              Before="moon1" Sequence='execute' />
+    <CustomAction Id="moon1" BinaryKey="WixCA" DllEntry="WixQuietExec64" Execute="deferred" Return="check" Impersonate="no" />
+    <SetProperty     Value='"C:\Windows\System32\cmd.exe" /c echo oooo deffered 2'
+                  Id="moon2"
+              Before="moon2" Sequence='execute' />
+    <CustomAction Id="moon2" BinaryKey="WixCA" DllEntry="WixQuietExec64" Execute="deferred" Return="check" Impersonate="no" />
+
+    <InstallExecuteSequence>
+      <Custom Action="QtExecExample" Before="InstallInitialize"/>
+      <Custom Action="moon1" After="InstallInitialize"/>
+      <Custom Action="moon2" After="moon1"/>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>
