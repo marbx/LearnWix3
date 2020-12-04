@@ -12,13 +12,10 @@
       >
     <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine"/>
     <MediaTemplate EmbedCab="yes"/>
-    <WixVariable Id="WixUILicenseRtf" Value="..\License.rtf"/>
-    <WixVariable Id="WixUIBannerBmp" Value="..\imgTop.png"/>
-    <WixVariable Id="WixUIDialogBmp" Value="..\imgLeft.png"/>
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFiles64Folder' Name='PFiles'>
         <Directory Id='Acme' Name='Acme'>
-          <Directory Id='INSTALLDIR' Name='Foobar 1.0'>
+          <Directory Id='INSTALLDIR' Name='Foobar'>
             <Component Id='ReadMe.component'>
               <File Id='ReadMe.fileID' Name='FoobarAppl10.txt' Source='FoobarAppl10.txt' KeyPath='yes'/>
             </Component>
