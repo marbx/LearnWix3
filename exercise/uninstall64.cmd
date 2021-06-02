@@ -1,0 +1,1 @@
+msiexec /x Product-AMD64.msi /qb! /l*v Product-AMD64-uninstall.log
