@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product
       Name='Foo 1.0'
@@ -9,7 +9,6 @@
       Id='*'
   >
     <Package InstallerVersion='500' Compressed='yes' InstallScope="perMachine"/>
-    <MediaTemplate EmbedCab="yes"/>
     <Directory Id='TARGETDIR' Name='SourceDir'>    <!-- fixed expression -->
       <Directory Id="$(var.PROGRAMFILES)">    <!-- commonly    C:\Program Files or   C:\Program Files (x86) -->
         <Directory Id='Acme' Name='Acme'>
@@ -34,5 +33,10 @@
       <ComponentRef Id='Exe.component'/>
       <ComponentRef Id='ReadMe.component'/>
     </Feature>
+    <!--  The GUI  -->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/> <!-- For a user using the GUI -->
+    <UIRef Id="ProductUI" />         <!-- ProductUI.wxs must be parameter to candle and light -->
+    <!--  No cab  -->
+    <MediaTemplate EmbedCab="yes"/>
   </Product>
 </Wix>

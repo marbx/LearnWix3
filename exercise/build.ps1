@@ -38,10 +38,9 @@ Write-Host -ForegroundColor Yellow "Compiling wxs to $($PLATFORM[$i]) wixobj"
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
-    Product.wxs
+    Product.wxs ProductUI.wxs
 CheckExitCode "candle"
 
-# https://wixtoolset.org/documentation/manual/v3/votive/votive_project_references.html
 
 Write-Host -ForegroundColor Yellow "Linking wixobj to Product-$($ARCH_AKA[$i]).msi"
 & "$($ENV:WIX)bin\light"  -nologo `
@@ -52,6 +51,8 @@ Write-Host -ForegroundColor Yellow "Linking wixobj to Product-$($ARCH_AKA[$i]).m
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
     -sice:ICE03 `
-    Product.wixobj
+    -cultures:en-us `
+    Product.wixobj ProductUI.wixobj
 CheckExitCode "light"
 
+Write-Host -ForegroundColor Green "OK"
