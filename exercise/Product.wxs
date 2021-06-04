@@ -6,13 +6,12 @@
       Manufacturer='Acme Ltd.'
       Language='1033'
       UpgradeCode='fc67ab4e-2f1a-47bb-a64f-5c17ff8107da'
-      Id='*'
-  >
+      Id='*'>
     <Package InstallerVersion='500' Compressed='yes' InstallScope="perMachine"/>
     <Directory Id='TARGETDIR' Name='SourceDir'>    <!-- fixed expression -->
       <Directory Id="$(var.PROGRAMFILES)">    <!-- commonly    C:\Program Files or   C:\Program Files (x86) -->
         <Directory Id='Acme' Name='Acme'>
-          <Directory Id='INSTALLDIR' Name='Foo'>
+          <Directory Id='INSTALLDIR' Name='Foo'> <!-- user can set on commandline or GUI  -->
             <Component Id='Exe.component' Win64="$(var.WIN64)">
               <File Id='Exe.fileID' Source="$(var.EXE)" KeyPath='yes'/>
             </Component>
