@@ -7,7 +7,7 @@ $msbuild = "C:\Program Files (x86)\MSBuild\14.0\"    # Build tools 2015 for comp
 
 function CheckExitCode($txt) {
     if ($LastExitCode -eq 0) {
-        Write-Host -ForegroundColor Green "$txt   *DONE*"
+        Write-Host -ForegroundColor Green "$txt *DONE*"
     } else {
         Write-Host -ForegroundColor Red "$txt failed"
         exit(1)
@@ -15,7 +15,7 @@ function CheckExitCode($txt) {
 }
 
 
-Write-Host -ForegroundColor Yellow "Compiling C# custom actions into intermediate language (*.dll)"
+Write-Host -ForegroundColor Yellow "Compiling C# custom actions into *.dll"
 Push-Location CustomAction01
 $releasedir = "obj_il"
 if (!(Test-Path -Path $releasedir)){New-Item -ItemType directory -Path $releasedir | Out-Null}
@@ -40,7 +40,7 @@ CheckExitCode "Compiling C#"
 # MakeSfxCA creates a self-extracting managed MSI CA DLL because
 # the custom action dll will run in a sandbox and needs all needed dll inside. This adds 700 kB.
 # Because MakeSfxCA does not check if Wix references a non existing procedure, you must check.
-Write-Host -ForegroundColor Yellow "Packing dlls into CA.dll for sandbox"
+Write-Host -ForegroundColor Yellow "Packaging *.dlls into *.CA.dll for running in a sandbox"
 Write-Host -ForegroundColor Red "Does this search find all your custom action procedures?"
 & "$($ENV:WIX)sdk\MakeSfxCA.exe" `
     "$pwd\CustomAction01\obj_il\CustomAction01.CA.dll" `
@@ -50,7 +50,7 @@ Write-Host -ForegroundColor Red "Does this search find all your custom action pr
     "$($ENV:WIX)bin\wix.dll" `
     "$($ENV:WIX)bin\Microsoft.Deployment.Resources.dll" `
     "$pwd\CustomAction01\CustomAction.config"
-CheckExitCode "Packing"
+CheckExitCode "Packaging"
 
 
 Write-Host -ForegroundColor Yellow "Compiling wxs to wixobj"
@@ -64,7 +64,7 @@ Write-Host -ForegroundColor Yellow "Compiling wxs to wixobj"
 CheckExitCode "Compiling wxs"
 
 
-Write-Host -ForegroundColor Yellow "Linking wixobj to msi..."
+Write-Host -ForegroundColor Yellow "Linking wixobj to msi"
 & "$($ENV:WIX)bin\light" -nologo `
     -out "$pwd\Product.msi" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
