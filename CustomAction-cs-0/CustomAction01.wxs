@@ -24,7 +24,7 @@
       Property="WriteConfig_DECAC"
       Value="hello1=[HELLO1];hello2=[HELLO2]" />
 
-    <Binary Id='CustomAction01' SourceFile='CustomAction01\obj\x86\Release\CustomAction01.CA.dll'/>
+    <Binary Id='CustomAction01' SourceFile='CustomAction01\obj_il\CustomAction01.CA.dll'/>
 
   </Fragment>
 </Wix>

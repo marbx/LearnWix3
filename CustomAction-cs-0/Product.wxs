@@ -9,7 +9,7 @@
       UpgradeCode='8c014d5a-1067-4af6-b419-a97f48359b03'
       Id='*'
       >
-    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine" />
+    <Package InstallerVersion='500' Compressed='yes' InstallScope="perMachine" />
 
     <!-- Default values of public properties -->
     <Property Id="HELLO1"               Value="world one"/>
