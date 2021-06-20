@@ -8,4 +8,5 @@ silentdelelete *.msi
 silentdelelete *.log
 silentdelelete *.wixpdb
 silentdelelete *.wixobj
-silentdelelete CustomAction01\obj_il
+silentdelelete CustomAction01\*.dll
+silentdelelete CustomAction01\*.pdb
