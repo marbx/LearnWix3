@@ -1,8 +1,5 @@
 Features
-- Build 64bit and 32 msi
-- Use  "ProgramFiles64Folder" and "ProgramFilesFolder" as defaults.
-- Use  CommonAppDataFolder for Config
-
+- Build 64bit and 32 msi using only WiX and PowerShell
 
 ### Links
 

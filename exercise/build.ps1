@@ -23,10 +23,11 @@ function CheckExitCode($txt) {   # Exit on failure
     }
 }
 
-# To compile, name all wxs, define properties for the wxs with -d
+# To compile: name all wxs. Define properties for the wxs with -d
 # Options see "%wix%bin\candle"
-Write-Host -ForegroundColor Yellow "Compiling wxs to wixobj"
+Write-Host -ForegroundColor Yellow "Compiling wxs to $($ARCHITECTURE[$i]) wixobj"
 & "$($ENV:WIX)bin\candle.exe" -nologo -sw1150 `
+    -arch $ARCHITECTURE[$i] `
     -dWIN64="$($WIN64[$i])" `
     -dEXE="$($EXE[$i])" `
     -dCONFIG="$($CONFIG[$i])" `
@@ -34,7 +35,6 @@ Write-Host -ForegroundColor Yellow "Compiling wxs to wixobj"
     -ddist=".\" `
     -dPRODUCT="$PRODUCT" `
     -dMANUFACTURER="$MANUFACTURER" `
-    -arch $ARCHITECTURE[$i] `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
@@ -42,7 +42,7 @@ Write-Host -ForegroundColor Yellow "Compiling wxs to wixobj"
 CheckExitCode "candle"
 
 # Options https://wixtoolset.org/documentation/manual/v3/overview/light.html
-Write-Host -ForegroundColor Yellow "Linking wixobj to $PRODUCT-$($ARCH_AKA[$i]).msi"
+Write-Host -ForegroundColor Yellow "Linking $($ARCHITECTURE[$i]) wixobj to $PRODUCT-$($ARCH_AKA[$i]).msi"
 & "$($ENV:WIX)bin\light"  -nologo `
     -out "$pwd\$PRODUCT-$($ARCH_AKA[$i]).msi" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
