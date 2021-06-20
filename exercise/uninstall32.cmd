@@ -1,1 +1,1 @@
-msiexec /x Product-x86.msi /qb! /l*v Product-x86-uninstall.log
+msiexec /x Largest-number-x86.msi /qb! /l*v Largest-number-x86-uninstall.log

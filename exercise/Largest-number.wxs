@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product
-      Name='Foo 1.0'
+      Name='$(var.PRODUCT)'
       Version='1.0.0'
-      Manufacturer='Acme Ltd.'
+      Manufacturer='$(var.MANUFACTURER)'
       Language='1033'
       UpgradeCode='fc67ab4e-2f1a-47bb-a64f-5c17ff8107da'
       Id='*'>
-    <Package InstallerVersion='500' Compressed='yes' InstallScope="perMachine"/>
+    <!--  The Scope  -->
+    <Package InstallScope="perMachine" InstallerVersion='500' Compressed='yes'/>
+    <!--  The Directories  -->
     <Directory Id='TARGETDIR' Name='SourceDir'>    <!-- fixed expression -->
       <Directory Id="$(var.PROGRAMFILES)">    <!-- commonly    C:\Program Files or   C:\Program Files (x86) -->
-        <Directory Id='Acme' Name='Acme'>
-          <Directory Id='INSTALLDIR' Name='Foo'> <!-- user can set on commandline or GUI  -->
+        <Directory Id='PROGRAMFILES_MANUFACTURER' Name='$(var.MANUFACTURER)'>
+          <Directory Id='INSTALLDIR' Name='$(var.PRODUCT)'> <!-- user can set/override this in CLI/GUI  -->
             <Component Id='Exe.component' Win64="$(var.WIN64)">
               <File Id='Exe.fileID' Source="$(var.EXE)" KeyPath='yes'/>
             </Component>
@@ -19,22 +21,26 @@
         </Directory>
       </Directory>
       <Directory Id="CommonAppDataFolder">    <!-- commonly    %ProgramData% C:\ProgramData -->
-        <Directory Id="ManufacturerFolder" Name="Acme">
-          <Directory Id="MyAppFolder" Name="Foo">
-            <Component Id='ReadMe.component' Win64="$(var.WIN64)">
-              <File Id='ReadMe.fileID' Source="$(var.CONFIG)" KeyPath='yes'/>
+        <Directory Id="Manufacturer_CommonAppDataFolder" Name="$(var.MANUFACTURER)">
+          <Directory Id="MyAppFolder" Name="$(var.PRODUCT)">
+            <Component Id='Config.component' Win64="$(var.WIN64)">
+              <File Id='Config.fileID' Source="$(var.CONFIG)" KeyPath='yes'/>
             </Component>
           </Directory>
         </Directory>
       </Directory>
     </Directory>
+    <!--  The Features  -->
     <Feature Id='Complete'>
       <ComponentRef Id='Exe.component'/>
-      <ComponentRef Id='ReadMe.component'/>
+      <ComponentRef Id='Config.component'/>
     </Feature>
     <!--  The GUI  -->
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/> <!-- For a user using the GUI -->
-    <UIRef Id="ProductUI" />         <!-- ProductUI.wxs must be parameter to candle and light -->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
+    <UI Id="ProductUI">
+      <UIRef Id="WixUI_InstallDir" />
+      <Publish Dialog="InstallDirDlg"     Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="4">1</Publish>
+    </UI>
     <!--  No cab  -->
     <MediaTemplate EmbedCab="yes"/>
   </Product>

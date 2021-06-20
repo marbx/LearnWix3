@@ -1,1 +1,1 @@
-msiexec /i Product-AMD64.msi /l*v Product-AMD64-install.log  /qn
+msiexec /i Largest-number-AMD64.msi /l*v Largest-number-AMD64-install.log  /qn

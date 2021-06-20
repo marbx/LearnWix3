@@ -9,9 +9,12 @@ $WIN64        = "yes",   "no"
 $ARCHITECTURE = "x64",   "x86"
 $ARCH_AKA     = "AMD64", "x86"
 $PLATFORM     = "x64",   "Win32"
-$PROGRAMFILES = "ProgramFiles64Folder", "ProgramFilesFolder"
-$EXE          = "Foo64.exe", "Foo32.exe"
-$CONFIG       = "Foo.config", "Foo.config"
+$PROGRAMFILES = "ProgramFiles64Folder", "ProgramFilesFolder"   # Well-known-names
+$EXE          = "largest_u64.exe", "largest_u32.exe"
+$CONFIG       = "Largest-number.config", "Largest-number.config"
+$PRODUCT      = "Largest-number"
+$MANUFACTURER = "Largest-numberer"
+
 
 function CheckExitCode($txt) {   # Exit on failure
     if ($LastExitCode -ne 0) {
@@ -21,30 +24,34 @@ function CheckExitCode($txt) {   # Exit on failure
 }
 
 # To compile, name all wxs, define properties for the wxs with -d
-Write-Host -ForegroundColor Yellow "Compiling wxs to $($ARCHITECTURE[$i]) wixobj"
+# Options see "%wix%bin\candle"
+Write-Host -ForegroundColor Yellow "Compiling wxs to wixobj"
 & "$($ENV:WIX)bin\candle.exe" -nologo -sw1150 `
     -dWIN64="$($WIN64[$i])" `
     -dEXE="$($EXE[$i])" `
     -dCONFIG="$($CONFIG[$i])" `
     -dPROGRAMFILES="$($PROGRAMFILES[$i])" `
     -ddist=".\" `
+    -dPRODUCT="$PRODUCT" `
+    -dMANUFACTURER="$MANUFACTURER" `
     -arch $ARCHITECTURE[$i] `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
-    Product.wxs ProductUI.wxs
+    "$PRODUCT.wxs"
 CheckExitCode "candle"
 
-Write-Host -ForegroundColor Yellow "Linking wixobj to Product-$($ARCH_AKA[$i]).msi"
+# Options https://wixtoolset.org/documentation/manual/v3/overview/light.html
+Write-Host -ForegroundColor Yellow "Linking wixobj to $PRODUCT-$($ARCH_AKA[$i]).msi"
 & "$($ENV:WIX)bin\light"  -nologo `
-    -out "$pwd\Product-$($ARCH_AKA[$i]).msi" `
-    -pdbout "$pwd\Product.wixpdb" `
+    -out "$pwd\$PRODUCT-$($ARCH_AKA[$i]).msi" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
+    -spdb `
     -sice:ICE03 `
     -cultures:en-us `
-    Product.wixobj ProductUI.wixobj
+    "$PRODUCT.wixobj"
 CheckExitCode "light"
 
-Write-Host -ForegroundColor Green "Build ended"
+Write-Host -ForegroundColor Green "Done "

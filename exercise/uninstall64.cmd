@@ -1,1 +1,1 @@
-msiexec /x Product-AMD64.msi /qb! /l*v Product-AMD64-uninstall.log
+msiexec /x Largest-number-AMD64.msi /qb! /l*v Largest-number-AMD64-uninstall.log
