@@ -3,10 +3,10 @@ Set-PSDebug -Strict
 Set-strictmode -version latest
 
 # Product related values
-$EXE          = "largest_u64.exe", "largest_u32.exe"
-$CONFIG       = "Largest-number.config"
-$MANUFACTURER = "Largest-numberer"
-$PRODUCT      = "Largest-number"
+$EXE          = "a64.exe", "a32.exe"
+$CONFIG       = "a.config"
+$MANUFACTURER = "aaaManufacturer"
+$PRODUCT      = "aaaProduct"
 $VERSION      = "1.2.4"
 
 $msbuild = "C:\Program Files (x86)\MSBuild\14.0\"    # MSBuild only needed to compile C#
@@ -50,7 +50,7 @@ CheckExitCode "Compiling C#"
 # the custom action dll will run in a sandbox and needs all dll inside. This adds 700 kB.
 # Because MakeSfxCA does not check if Wix references a non existing procedure, you must check.
 Write-Host -ForegroundColor Yellow "Packaging *.dlls into *.CA.dll for running in a sandbox"
-Write-Host -ForegroundColor Green "Does this search find all your custom action procedures?"
+Write-Host -ForegroundColor Blue "Does this search find all your custom action procedures?"
 & "$($ENV:WIX)sdk\MakeSfxCA.exe" `
     "$pwd\CustomAction01\CustomAction01.CA.dll" `
     "$($ENV:WIX)sdk\x86\SfxCA.dll" `
