@@ -40,11 +40,12 @@ namespace CustomAction01 {
         [CustomAction]
         public static ActionResult ReadConfig_IMCAC(Session session) {
             // IMMEDIATE means
-            //   you should not modify the system because the transaction has not yet started
+            //   you should not modify the system because the install transaction has not yet started
             //   reading is fine
             // Just Logging
             session.Log("...Begin ReadConfig_IMCAC");
-            string hello1 = get_property_IMCAC(session, "HELLO1");
+            string HELLO1 = get_property_IMCAC(session, "HELLO1");
+            string HELLO2 = get_property_IMCAC(session, "HELLO2");
             session.Log("...End ReadConfig_IMCAC");
             return ActionResult.Success;
         }
@@ -53,11 +54,12 @@ namespace CustomAction01 {
         [CustomAction]
         public static ActionResult WriteConfig_DECAC(Session session) {
             // DEFERRED means
-            //   you may modify the system because the transaction has started
+            //   you may modify the system because the install transaction has started
             // If key does not exist, the msi will fail to install
             // Just Logging
             session.Log("...Begin WriteConfig_DECAC");
-            string hello1 = get_property_DECAC(session, "hello1");
+            string HELLO1 = get_property_DECAC(session, "HELLO1");
+            string HELLO2 = get_property_DECAC(session, "HELLO2");
             session.Log("...End WriteConfig_DECAC");
             return ActionResult.Success;
         }

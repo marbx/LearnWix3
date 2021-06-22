@@ -2,13 +2,22 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product
       Name='$(var.PRODUCT)'
-      Version='1.0.0'
+      Version='$(var.VERSION)'
       Manufacturer='$(var.MANUFACTURER)'
       Language='1033'
       UpgradeCode='fc67ab4e-2f1a-47bb-a64f-5c17ff8107da'
       Id='*'>
+
+
     <!--  The Scope  -->
     <Package InstallScope="perMachine" InstallerVersion='500' Compressed='yes'/>
+
+
+    <!-- The Default values of public properties (must be upper case) -->
+    <Property Id="HELLO1"               Value="world one"/>
+    <Property Id="HELLO2"               Value="world two"/>
+
+
     <!--  The Directories  -->
     <Directory Id='TARGETDIR' Name='SourceDir'>    <!-- fixed expression -->
       <Directory Id="$(var.PROGRAMFILES)">    <!-- commonly    C:\Program Files or   C:\Program Files (x86) -->
@@ -30,17 +39,78 @@
         </Directory>
       </Directory>
     </Directory>
+
+
     <!--  The Features  -->
     <Feature Id='Complete'>
       <ComponentRef Id='Exe.component'/>
       <ComponentRef Id='Config.component'/>
     </Feature>
+
+
+    <!--  The GUI Sequence  -->
+    <!--
+      Run under the msi initiating user’s privelege.
+      No changes applied. msi asks for input from the user
+      https://docs.microsoft.com/en-us/windows/win32/msi/suggested-installuisequence
+      -->
+
+
+    <!--  The Install Sequence  -->
+    <!--
+      Run using the localsystem user’s privilege (aka server side).
+      https://docs.microsoft.com/en-us/windows/win32/msi/suggested-installexecutesequence
+
+      Before MigrateFeatureStates:
+        Custom action is placed before the transaction starts, coined "immediate".
+        You should not modifiy the system.
+      After InstallFiles:
+        Custom action is placed after the transaction started, coined "deferred".
+        Deferred custom actions (DECAC) need custum action helper (CADH) to access msi properties
+        You may modify the system.
+      -->
+    <InstallExecuteSequence>
+      <Custom Action='ReadConfig_IMCAC'            Before='MigrateFeatureStates'        >NOT Installed</Custom>
+      <Custom Action='WriteConfig_CADH'
+              Before='WriteConfig_DECAC'                                                >NOT Installed</Custom>
+      <Custom Action='WriteConfig_DECAC'           After='InstallFiles'                 >NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+
+    <!--  The Custom Actions  -->
+    <Binary Id='CustomAction01' SourceFile='CustomAction01\CustomAction01.CA.dll'/>
+
+    <!--      IMMEDIATE CUSTOM ACTION (IMCAC) run before the transaction and should not modify the system -->
+    <CustomAction
+      Id="ReadConfig_IMCAC"
+      DllEntry='ReadConfig_IMCAC'
+      BinaryKey='CustomAction01'
+      Execute='firstSequence'/>
+
+    <!--      DEFERRED CUSTOM ACTION (DECAC) runs in a transaction and may modify the system -->
+    <CustomAction
+      Id="WriteConfig_DECAC"
+      DllEntry='WriteConfig_DECAC'
+      BinaryKey='CustomAction01'
+      Execute='deferred'
+      Return='check'
+      Impersonate='no'/>
+
+    <!--      Pass msi properties to the DEFERRED CUSTOM ACTION (DECAC)  -->
+    <CustomAction
+      Id="WriteConfig_CADH"
+      Property="WriteConfig_DECAC"
+      Value="HELLO1=[HELLO1];HELLO2=[HELLO2]" />
+
+
     <!--  The GUI  -->
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
     <UI Id="ProductUI">
       <UIRef Id="WixUI_InstallDir" />
       <Publish Dialog="InstallDirDlg"     Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="4">1</Publish>
     </UI>
+
+
     <!--  No cab  -->
     <MediaTemplate EmbedCab="yes"/>
   </Product>
