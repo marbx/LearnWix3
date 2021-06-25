@@ -9,9 +9,21 @@
       Id='*'>
 
 
-    <!--  The Scope  -->
+    <!--  Install per Machine -->
     <Package InstallScope="perMachine" InstallerVersion='500' Compressed='yes'/>
 
+    <!-- Stop install if two files exist-->
+    <Property Id="FINDME1">
+      <DirectorySearch Id="ds1" Path="[%ProgramData]\$(var.MANUFACTURER)">
+        <FileSearch Name="findme1"/>
+      </DirectorySearch>
+    </Property>
+    <Property Id="FINDME2">
+      <DirectorySearch Id="ds2" Path="[%ProgramData]\$(var.MANUFACTURER)">
+        <FileSearch Name="findme2"/>
+      </DirectorySearch>
+    </Property>
+    <Condition Message="findme1 and findme2 must not both exist">Installed or (not (FINDME1 and FINDME2))</Condition>
 
     <!-- The Default values of public properties (must be upper case) -->
     <Property Id="HELLO1"               Value="world one"/>
