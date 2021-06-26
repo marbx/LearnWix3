@@ -29,6 +29,27 @@
     <Property Id="HELLO1"               Value="world one"/>
     <Property Id="HELLO2"               Value="world two"/>
 
+    <!-- Previously installed? Read registry.-->
+    <?if $(var.WIN64)="yes" ?>
+      <Property Id="INSTALLDIR64REG">
+          <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="root_dir"
+                          Id="installdir64" Win64="yes" Type="raw"/>
+      </Property>
+    <?endif ?>
+    <Property Id="INSTALLDIR32REG">
+          <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="root_dir"
+                          Id="installdir32" Win64="no" Type="raw"/>
+    </Property>
+    <?if $(var.WIN64)="yes" ?>
+      <Property Id="CONFIGDIR64REG">
+          <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="config_dir"
+                          Id="configdir64" Win64="yes" Type="raw"/>
+      </Property>
+    <?endif ?>
+    <Property Id="CONFIGDIR32REG">
+          <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="config_dir"
+                          Id="configdir32" Win64="no" Type="raw"/>
+    </Property>
 
     <!--  The Directories  -->
     <Directory Id='TARGETDIR' Name='SourceDir'>    <!-- fixed expression -->
