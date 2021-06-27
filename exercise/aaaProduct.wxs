@@ -29,6 +29,7 @@
     <Property Id="HELLO1"               Value="world one"/>
     <Property Id="HELLO2"               Value="world two"/>
 
+
     <!-- Previously installed? Read registry.-->
     <?if $(var.WIN64)="yes" ?>
       <Property Id="INSTALLDIR64REG">
@@ -55,11 +56,7 @@
     <Directory Id='TARGETDIR' Name='SourceDir'>    <!-- fixed expression -->
       <Directory Id="$(var.PROGRAMFILES)">    <!-- commonly    C:\Program Files or   C:\Program Files (x86) -->
         <Directory Id='PROGRAMFILES_MANUFACTURER' Name='$(var.MANUFACTURER)'>
-          <Directory Id='INSTALLDIR' Name='$(var.PRODUCT)'> <!-- user can set/override this in CLI/GUI  -->
-            <Component Id='Exe.component' Win64="$(var.WIN64)">
-              <File Id='Exe.fileID' Source="$(var.EXE)" KeyPath='yes'/>
-            </Component>
-          </Directory>
+          <Directory Id='INSTALLDIR' Name='$(var.PRODUCT)'/> <!-- user can set/override this in CLI or GUI  -->
         </Directory>
       </Directory>
       <Directory Id="CommonAppDataFolder">    <!-- commonly    %ProgramData% C:\ProgramData -->
@@ -73,11 +70,10 @@
       </Directory>
     </Directory>
 
-
-    <!--  The Features  -->
+    <!--  Assemble the Features  -->
     <Feature Id='Complete'>
-      <ComponentRef Id='Exe.component'/>
-      <ComponentRef Id='Config.component'/>
+      <ComponentGroupRef Id="DiscoveredFiles" />
+      <ComponentRef      Id='Config.component'/>
     </Feature>
 
 

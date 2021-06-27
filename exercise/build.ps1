@@ -3,11 +3,11 @@ Set-PSDebug -Strict
 Set-strictmode -version latest
 
 # Product related values
-$EXE          = "a64.exe", "a32.exe"
-$CONFIG       = "a.config"
-$MANUFACTURER = "aaaManufacturer"
-$PRODUCT      = "aaaProduct"
-$VERSION      = "1.2.4"
+$MANUFACTURER   = "aaaManufacturer"
+$PRODUCT        = "aaaProduct"
+$VERSION        = "1.2.4"
+$CONFIG         = "a.config"
+$DISCOVERFOLDER = "aaaProduct64bit", "aaaProduct32bit"
 
 $msbuild = "C:\Program Files (x86)\MSBuild\14.0\"    # MSBuild only needed to compile C#
 
@@ -46,10 +46,10 @@ Pop-Location
 CheckExitCode "Compiling C#"
 
 
+Write-Host -ForegroundColor Yellow "Packaging *.dlls into *.CA.dll for running in a sandbox"
 # MakeSfxCA creates a self-extracting managed MSI CA DLL because
 # the custom action dll will run in a sandbox and needs all dll inside. This adds 700 kB.
 # Because MakeSfxCA does not check if Wix references a non existing procedure, you must check.
-Write-Host -ForegroundColor Yellow "Packaging *.dlls into *.CA.dll for running in a sandbox"
 Write-Host -ForegroundColor Blue "Does this search find all your custom action procedures?"
 & "$($ENV:WIX)sdk\MakeSfxCA.exe" `
     "$pwd\CustomAction01\CustomAction01.CA.dll" `
@@ -62,36 +62,54 @@ Write-Host -ForegroundColor Blue "Does this search find all your custom action p
 CheckExitCode "Packaging"
 
 
-# To compile: name all wxs. Define properties for the wxs with -d
-# Options see "%wix%bin\candle"
+Write-Host -ForegroundColor Yellow "Harvesting files from $($DISCOVERFOLDER[$i]) to $($ARCHITECTURE[$i])"
+# https://wixtoolset.org/documentation/manual/v3/overview/heat.html
+# -cg <ComponentGroupName> Component group name (cannot contain spaces e.g -cg MyComponentGroup).
+# -sfrag   Suppress generation of fragments for directories and components.
+# -var     WiX variable for SourceDir
+# -gg      Generate guids now. All components are given a guid when heat is run.
+# -sfrag   Suppress generation of fragments for directories and components.
+# -sreg    Suppress registry harvesting.
+# -suid    Suppress SILLY unique identifiers for files, components, & directories.
+# -srd     Suppress harvesting the root directory as an element.
+# -ke      Keep empty directories.
+# -dr <DirectoryName>   Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef).
+#          SuppressSpecificWarnings="5150"
+& "$($ENV:WIX)bin\heat" dir "$($DISCOVERFOLDER[$i])" -out "$PRODUCT-discovered-$($ARCHITECTURE[$i])-files.wxs" `
+   -cg DiscoveredFiles -var var.DISCOVERFOLDER `
+   -nologo -indent 1 -gg -sfrag -sreg -suid -srd -ke -template fragment -dr INSTALLDIR
+
+
 Write-Host -ForegroundColor Yellow "Compiling wxs to $($ARCHITECTURE[$i]) wixobj"
+# Options see "%wix%bin\candle"
 & "$($ENV:WIX)bin\candle.exe" -nologo -sw1150 `
     -arch $ARCHITECTURE[$i] `
     -dWIN64="$($WIN64[$i])" `
     -dPROGRAMFILES="$($PROGRAMFILES[$i])" `
     -ddist=".\" `
-    -dEXE="$($EXE[$i])" `
     -dCONFIG="$CONFIG" `
     -dMANUFACTURER="$MANUFACTURER" `
     -dPRODUCT="$PRODUCT" `
     -dVERSION="$VERSION" `
+    -dDISCOVERFOLDER="$($DISCOVERFOLDER[$i])" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
-    "$PRODUCT.wxs"
+    "$PRODUCT.wxs" "$PRODUCT-discovered-$($ARCHITECTURE[$i])-files.wxs"
 CheckExitCode "candle"
 
-# Options https://wixtoolset.org/documentation/manual/v3/overview/light.html
 Write-Host -ForegroundColor Yellow "Linking $($ARCHITECTURE[$i]) wixobj to $PRODUCT-$VERSION-$($ARCH_AKA[$i]).msi"
+# Options https://wixtoolset.org/documentation/manual/v3/overview/light.html
 & "$($ENV:WIX)bin\light"  -nologo `
     -out "$pwd\$PRODUCT-$VERSION-$($ARCH_AKA[$i]).msi" `
+    -dDISCOVERFOLDER="$($DISCOVERFOLDER[$i])" `
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
     -spdb `
     -sice:ICE03 `
     -cultures:en-us `
-    "$PRODUCT.wixobj"
+    "$PRODUCT.wixobj" "$PRODUCT-discovered-$($ARCHITECTURE[$i])-files.wixobj"
 CheckExitCode "light"
 
 Write-Host -ForegroundColor Green "Done "
