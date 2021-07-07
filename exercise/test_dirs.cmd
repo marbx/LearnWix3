@@ -1,10 +1,14 @@
-dir /b "c:\Windows\Temp\aaa"
+@echo off
+IF exist "c:\aaaProduct" (
+dir      "c:\aaaProduct" )
 
-dir /b "C:\Program Files (x86)\aaaManufacturer"
-dir /b "C:\Program Files (x86)\aaaManufacturer\aaaProduct"
+IF exist "C:\Program Files (x86)\aaaManufacturer" (
+dir      "C:\Program Files (x86)\aaaManufacturer" )
 
-dir /b "C:\Program Files\aaaManufacturer"
-dir /b "C:\Program Files\aaaManufacturer\aaaProduct"
+IF exist "C:\Program Files\aaaManufacturer" (
+dir      "C:\Program Files\aaaManufacturer" )
 
-dir /b "C:\ProgramData\aaaManufacturer\aaaProduct"
+IF exist "C:\ProgramData\aaaManufacturer\aaaProduct" (
+dir      "C:\ProgramData\aaaManufacturer\aaaProduct" )
+
 

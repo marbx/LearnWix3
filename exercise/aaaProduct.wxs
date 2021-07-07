@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product
+      Manufacturer='$(var.MANUFACTURER)'
       Name='$(var.PRODUCT)'
       Version='$(var.VERSION)'
-      Manufacturer='$(var.MANUFACTURER)'
       Language='1033'
       UpgradeCode='fc67ab4e-2f1a-47bb-a64f-5c17ff8107da'
       Id='*'>
@@ -12,25 +12,12 @@
     <!--  Install per Machine -->
     <Package InstallScope="perMachine" InstallerVersion='500' Compressed='yes'/>
 
-    <!-- Stop install if two files exist-->
-    <Property Id="FINDME1">
-      <DirectorySearch Id="ds1" Path="[%ProgramData]\$(var.MANUFACTURER)">
-        <FileSearch Name="findme1"/>
-      </DirectorySearch>
-    </Property>
-    <Property Id="FINDME2">
-      <DirectorySearch Id="ds2" Path="[%ProgramData]\$(var.MANUFACTURER)">
-        <FileSearch Name="findme2"/>
-      </DirectorySearch>
-    </Property>
-    <Condition Message="findme1 and findme2 must not both exist">Installed or (not (FINDME1 and FINDME2))</Condition>
 
-    <!-- The Default values of public properties (must be upper case) -->
-    <Property Id="HELLO1"               Value="world one"/>
-    <Property Id="HELLO2"               Value="world two"/>
+    <!--  Abort -->
+    <Condition Message="Abort [AbortReason]">Installed or (not AbortReason)</Condition>
 
 
-    <!-- Previously installed? Read registry.-->
+    <!-- Previously installed? Read both (32/64) registries on 64.-->
     <?if $(var.WIN64)="yes" ?>
       <Property Id="INSTALLDIR64REG">
           <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="root_dir"
@@ -54,12 +41,12 @@
 
     <!--  The Directories  -->
     <Directory Id='TARGETDIR' Name='SourceDir'>    <!-- fixed expression -->
-      <Directory Id="$(var.PROGRAMFILES)">    <!-- commonly    C:\Program Files or   C:\Program Files (x86) -->
+      <Directory Id="$(var.PROGRAMFILES)">    <!-- typically    C:\Program Files or   C:\Program Files (x86) -->
         <Directory Id='PROGRAMFILES_MANUFACTURER' Name='$(var.MANUFACTURER)'>
           <Directory Id='INSTALLDIR' Name='$(var.PRODUCT)'/> <!-- user can set/override this in CLI or GUI  -->
         </Directory>
       </Directory>
-      <Directory Id="CommonAppDataFolder">    <!-- commonly    %ProgramData% C:\ProgramData -->
+      <Directory Id="CommonAppDataFolder">    <!-- typically    %ProgramData% C:\ProgramData  but NOT AppData-->
         <Directory Id="Manufacturer_CommonAppDataFolder" Name="$(var.MANUFACTURER)">
           <Directory Id="MyAppFolder" Name="$(var.PRODUCT)">
             <Component Id='Config.component' Win64="$(var.WIN64)">
@@ -83,6 +70,9 @@
       No changes applied. msi asks for input from the user
       https://docs.microsoft.com/en-us/windows/win32/msi/suggested-installuisequence
       -->
+    <InstallUISequence>
+      <Custom Action='ReadConfig_IMCAC'       Before='LaunchConditions'  >NOT Installed</Custom>
+    </InstallUISequence>
 
 
     <!--  The Install Sequence  -->
@@ -99,10 +89,10 @@
         You may modify the system.
       -->
     <InstallExecuteSequence>
-      <Custom Action='ReadConfig_IMCAC'            Before='MigrateFeatureStates'        >NOT Installed</Custom>
+      <Custom Action='ReadConfig_IMCAC'       Before='LaunchConditions'  >NOT Installed</Custom>
       <Custom Action='WriteConfig_CADH'
-              Before='WriteConfig_DECAC'                                                >NOT Installed</Custom>
-      <Custom Action='WriteConfig_DECAC'           After='InstallFiles'                 >NOT Installed</Custom>
+              Before='WriteConfig_DECAC'                                 >NOT Installed</Custom>
+      <Custom Action='WriteConfig_DECAC'      After='InstallFiles'       >NOT Installed</Custom>
     </InstallExecuteSequence>
 
 
@@ -129,7 +119,7 @@
     <CustomAction
       Id="WriteConfig_CADH"
       Property="WriteConfig_DECAC"
-      Value="HELLO1=[HELLO1];HELLO2=[HELLO2]" />
+      Value="RootOld=[RootOld];RootNew=[RootNew];MOVE_CONF_PROGRAMDATA=[MOVE_CONF_PROGRAMDATA]" />
 
 
     <!--  The GUI  -->

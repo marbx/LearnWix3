@@ -44,8 +44,30 @@ namespace CustomAction01 {
             //   reading is fine
             // Just Logging
             session.Log("...Begin ReadConfig_IMCAC");
-            string HELLO1 = get_property_IMCAC(session, "HELLO1");
-            string HELLO2 = get_property_IMCAC(session, "HELLO2");
+            string Manufacturer = get_property_IMCAC(session, "Manufacturer");
+            string ProductName = get_property_IMCAC(session, "ProductName");
+            string MOVE_CONF_PROGRAMDATA = get_property_IMCAC(session, "MOVE_CONF_PROGRAMDATA");
+            string ProgramData = System.Environment.GetEnvironmentVariable("ProgramData");
+            string RootOld = @"C:\" + ProductName;
+            string RootNew =  ProgramData + @"\" + Manufacturer + @"\" + ProductName;
+            session["RootOld"] = RootOld;
+            session["RootNew"] = RootNew;
+            string abortReason = "";
+            string configOld = RootOld + @"\" + "conf" + @"\" + "a.config";
+            string configNew = RootNew + @"\" + "conf" + @"\" + "a.config";
+            session.Log("...configOld " + configOld);
+            session.Log("...configNew " + configNew);
+            if (MOVE_CONF_PROGRAMDATA == "1") {
+                if (File.Exists(configOld) && File.Exists(configNew)) {
+                    abortReason += configOld + " and " + configNew + " must not both exist.  ";
+                }
+                if (Directory.Exists(RootOld) && Directory.Exists(RootNew)) {
+                    abortReason = RootOld + " and " + RootNew + " must not both exist.  ";
+                }
+            }
+            if (abortReason.Length > 0) {
+                session["AbortReason"] = abortReason;
+            }
             session.Log("...End ReadConfig_IMCAC");
             return ActionResult.Success;
         }
@@ -56,10 +78,14 @@ namespace CustomAction01 {
             // DEFERRED means
             //   you may modify the system because the install transaction has started
             // If key does not exist, the msi will fail to install
-            // Just Logging
             session.Log("...Begin WriteConfig_DECAC");
-            string HELLO1 = get_property_DECAC(session, "HELLO1");
-            string HELLO2 = get_property_DECAC(session, "HELLO2");
+            string RootOld = get_property_DECAC(session, "RootOld");
+            string RootNew = get_property_DECAC(session, "RootNew");
+            string MOVE_CONF_PROGRAMDATA = get_property_DECAC(session, "MOVE_CONF_PROGRAMDATA");
+            if (MOVE_CONF_PROGRAMDATA == "1" && Directory.Exists(RootOld)) {
+                session.Log("...moving conf to ProgramData");
+                session.Log("...new path " + RootNew);
+            }
             session.Log("...End WriteConfig_DECAC");
             return ActionResult.Success;
         }
