@@ -22,8 +22,6 @@ namespace CustomAction01 {
         }
 
 
-
-
         public static string get_property_DECAC(Session session, string key) {
             // DEFERRED means
             //   you may modify the system because the transaction has started
