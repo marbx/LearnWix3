@@ -119,7 +119,7 @@
     <CustomAction
       Id="WriteConfig_CADH"
       Property="WriteConfig_DECAC"
-      Value="RootOld=[RootOld];RootNew=[RootNew];MOVE_CONF_PROGRAMDATA=[MOVE_CONF_PROGRAMDATA]" />
+      Value="RootOld=[RootOld];RootNew=[RootNew];MOVE_CONF_PROGRAMDATA=[MOVE_CONF_PROGRAMDATA];" />
 
 
     <!--  The GUI  -->
