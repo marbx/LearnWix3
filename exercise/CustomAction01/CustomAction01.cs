@@ -1,4 +1,4 @@
-﻿using Microsoft.Deployment.WindowsInstaller;
+using Microsoft.Deployment.WindowsInstaller;
 using Microsoft.Tools.WindowsInstallerXml;
 using Microsoft.Win32;
 using System;
@@ -53,16 +53,9 @@ namespace CustomAction01 {
             session["RootOld"] = RootOld;
             session["RootNew"] = RootNew;
             string abortReason = "";
-            string configOld = RootOld + @"\" + "conf" + @"\" + "a.config";
-            string configNew = RootNew + @"\" + "conf" + @"\" + "a.config";
-            session.Log("...configOld " + configOld);
-            session.Log("...configNew " + configNew);
             if (MOVE_CONF_PROGRAMDATA == "1") {
-                if (File.Exists(configOld) && File.Exists(configNew)) {
-                    abortReason += configOld + " and " + configNew + " must not both exist.  ";
-                }
                 if (Directory.Exists(RootOld) && Directory.Exists(RootNew)) {
-                    abortReason = RootOld + " and " + RootNew + " must not both exist.  ";
+                    abortReason = RootOld + " and " + RootNew + " must not both exist when MOVE_CONF_PROGRAMDATA=1.  ";
                 }
             }
             if (abortReason.Length > 0) {
@@ -82,6 +75,10 @@ namespace CustomAction01 {
             string RootOld = get_property_DECAC(session, "RootOld");
             string RootNew = get_property_DECAC(session, "RootNew");
             string MOVE_CONF_PROGRAMDATA = get_property_DECAC(session, "MOVE_CONF_PROGRAMDATA");
+            string configOld = RootOld + @"\" + "conf" + @"\" + "a.config";
+            string configNew = RootNew + @"\" + "conf" + @"\" + "a.config";
+            session.Log("...configOld " + configOld);
+            session.Log("...configNew " + configNew);
             if (MOVE_CONF_PROGRAMDATA == "1" && Directory.Exists(RootOld)) {
                 session.Log("...moving conf to ProgramData");
                 session.Log("...new path " + RootNew);
