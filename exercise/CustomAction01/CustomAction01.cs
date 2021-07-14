@@ -42,14 +42,15 @@ namespace CustomAction01 {
             //   reading is fine
             // Just Logging
             session.Log("...Begin ReadConfig_IMCAC");
-            string Manufacturer = get_property_IMCAC(session, "Manufacturer");
-            string ProductName = get_property_IMCAC(session, "ProductName");
+            string Manufacturer          = get_property_IMCAC(session, "Manufacturer");
+            string ProductName           = get_property_IMCAC(session, "ProductName");
             string MOVE_CONF_PROGRAMDATA = get_property_IMCAC(session, "MOVE_CONF_PROGRAMDATA");
             string ProgramData = System.Environment.GetEnvironmentVariable("ProgramData");
             string RootOld = @"C:\" + ProductName;
             string RootNew =  ProgramData + @"\" + Manufacturer + @"\" + ProductName;
             session["RootOld"] = RootOld;
             session["RootNew"] = RootNew;
+
             string abortReason = "";
             if (MOVE_CONF_PROGRAMDATA == "1") {
                 if (Directory.Exists(RootOld) && Directory.Exists(RootNew)) {

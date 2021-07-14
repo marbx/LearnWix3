@@ -16,6 +16,11 @@
     <!--  Abort -->
     <Condition Message="Abort [AbortReason]">Installed or (not AbortReason)</Condition>
 
+    <!-- Allow command line alias for Property  -->
+    <SetProperty  Id="INSTALLDIR"   Value='[INSTALLFOLDER]' Before="LaunchConditions">INSTALLFOLDER</SetProperty>
+
+    <!-- Conditionally set property -->
+    <SetProperty  Id="CONFIGDIR"   Value='C:\aaaProduct' Before="CostFinalize">NOT (MOVE_CONF_PROGRAMDATA = "1")</SetProperty>    <!-- Previously installed? Read both (32/64) registries on 64.-->
 
     <!-- Previously installed? Read both (32/64) registries on 64.-->
     <?if $(var.WIN64)="yes" ?>
@@ -48,7 +53,7 @@
       </Directory>
       <Directory Id="CommonAppDataFolder">    <!-- typically    %ProgramData% C:\ProgramData  but NOT AppData-->
         <Directory Id="Manufacturer_CommonAppDataFolder" Name="$(var.MANUFACTURER)">
-          <Directory Id="MyAppFolder" Name="$(var.PRODUCT)">
+          <Directory Id="CONFIGDIR" Name="$(var.PRODUCT)">
             <Component Id='Config.component' Win64="$(var.WIN64)">
               <File Id='Config.fileID' Source="$(var.CONFIG)" KeyPath='yes'/>
             </Component>
