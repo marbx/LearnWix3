@@ -15,9 +15,9 @@
 
     <!--  Aborts -->
     <?if $(var.WIN64)="no" ?>
-      <Condition Message="The 32bit variant must be installed on 32bit Windows.">Not VersionNT64</Condition>
+      <Condition Message="The 32bit variant must be installed on 32bit Windows.">not VersionNT64</Condition>
     <?endif?>
-    <Condition Message="Abort [AbortReason]">Installed or (not AbortReason)</Condition>
+    <Condition Message="[AbortReason]">Installed or (not AbortReason)</Condition>
 
     <Property Id="ROOTDRIVE" Value="C:\"/> <!-- prevent msi to chose the drive with most space left -->
 
