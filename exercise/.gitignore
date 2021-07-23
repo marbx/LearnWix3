@@ -2,5 +2,4 @@
 *.log
 *.wixpdb
 *.wixobj
-*-discovered-x64-files.wxs
-*-discovered-x86-files.wxs
+*-discovered-files.wxs

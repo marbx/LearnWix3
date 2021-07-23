@@ -19,10 +19,17 @@ $ARCH_AKA     = "AMD64",                "x86"                  # For filename
 $PLATFORM     = "x64",                  "Win32"
 $PROGRAMFILES = "ProgramFiles64Folder", "ProgramFilesFolder"   # msi dictionary values
 
-function CheckExitCode($txt) {   # Exit on failure
+function CheckExitCode() {   # Exit on failure
     if ($LastExitCode -ne 0) {
-        Write-Host -ForegroundColor Red "$txt failed"
+        if (Test-Path build.tmp -PathType Leaf) {
+            Get-Content build.tmp
+            Remove-Item build.tmp
+        }
+        Write-Host -ForegroundColor Red "Failed"
         exit(1)
+    }
+    if (Test-Path build.tmp -PathType Leaf) {
+        Remove-Item build.tmp
     }
 }
 
@@ -43,7 +50,7 @@ Push-Location CustomAction01
     /out:CustomAction01.dll `
     CustomAction01.cs Properties\AssemblyInfo.cs
 Pop-Location
-CheckExitCode "Compiling C#"
+CheckExitCode
 
 
 Write-Host -ForegroundColor Yellow "Packaging    *.dll's to *.CA.dll"
@@ -58,8 +65,8 @@ Write-Host -ForegroundColor Yellow "Packaging    *.dll's to *.CA.dll"
     "$($ENV:WIX)SDK\Microsoft.Deployment.WindowsInstaller.dll" `
     "$($ENV:WIX)bin\wix.dll" `
     "$($ENV:WIX)bin\Microsoft.Deployment.Resources.dll" `
-    "$pwd\CustomAction01\CustomAction.config" | Out-null
-CheckExitCode "Packaging"
+    "$pwd\CustomAction01\CustomAction.config" > build.tmp
+CheckExitCode
 
 
 Write-Host -ForegroundColor Yellow "Discovering  $($DISCOVERFOLDER[$i]) to $($ARCHITECTURE[$i]) components *.wxs"
@@ -75,9 +82,10 @@ Write-Host -ForegroundColor Yellow "Discovering  $($DISCOVERFOLDER[$i]) to $($AR
 # -ke      Keep empty directories.
 # -dr <DirectoryName>   Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef).
 #          SuppressSpecificWarnings="5150"
-& "$($ENV:WIX)bin\heat" dir "$($DISCOVERFOLDER[$i])" -out "$PRODUCT-discovered-$($ARCHITECTURE[$i])-files.wxs" `
+& "$($ENV:WIX)bin\heat" dir "$($DISCOVERFOLDER[$i])" -out "Product-$($ARCHITECTURE[$i])-discovered-files.wxs" `
    -cg DiscoveredFiles -var var.DISCOVERFOLDER `
    -nologo -indent 1 -gg -sfrag -sreg -suid -srd -ke -template fragment -dr INSTALLDIR
+CheckExitCode
 
 
 Write-Host -ForegroundColor Yellow "Compiling    *.wxs to $($ARCHITECTURE[$i]) *.wixobj"
@@ -95,8 +103,8 @@ Write-Host -ForegroundColor Yellow "Compiling    *.wxs to $($ARCHITECTURE[$i]) *
     -ext "$($ENV:WIX)bin\WixUtilExtension.dll" `
     -ext "$($ENV:WIX)bin\WixUIExtension.dll" `
     -ext "$($ENV:WIX)bin\WixNetFxExtension.dll" `
-    "$PRODUCT.wxs" "$PRODUCT-discovered-$($ARCHITECTURE[$i])-files.wxs" | Out-null
-CheckExitCode "candle"
+    "Product.wxs" "Product-$($ARCHITECTURE[$i])-discovered-files.wxs" > build.tmp
+CheckExitCode
 
 Write-Host -ForegroundColor Yellow "Linking      *.wixobj and *.CA.dll to $PRODUCT-$VERSION-$($ARCH_AKA[$i]).msi"
 # Options https://wixtoolset.org/documentation/manual/v3/overview/light.html
@@ -109,7 +117,7 @@ Write-Host -ForegroundColor Yellow "Linking      *.wixobj and *.CA.dll to $PRODU
     -spdb `
     -sice:ICE03 `
     -cultures:en-us `
-    "$PRODUCT.wixobj" "$PRODUCT-discovered-$($ARCHITECTURE[$i])-files.wixobj"
-CheckExitCode "light"
+    "Product.wixobj" "Product-$($ARCHITECTURE[$i])-discovered-files.wixobj"
+CheckExitCode
 
 Write-Host -ForegroundColor Green "Done "
