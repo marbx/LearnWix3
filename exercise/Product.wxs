@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product
-      Manufacturer='$(var.MANUFACTURER)'
-      Name='$(var.PRODUCT)'
-      Version='$(var.VERSION)'
-      Language='1033'
-      UpgradeCode='fc67ab4e-2f1a-47bb-a64f-5c17ff8107da'
-      Id='*'>
+      Manufacturer = "$(var.MANUFACTURER)"
+      Name         = "$(var.PRODUCT)"
+      Version      = "$(var.VERSION)"
+      UpgradeCode  = "fc67ab4e-2f1a-47bb-a64f-5c17ff8107da"
+      Id           = "*"
+      Language     = "1033">
 
 
     <!--  Install per Machine -->
-    <Package InstallScope="perMachine" InstallerVersion='500' Compressed='yes'/>
+    <Package InstallScope="perMachine" InstallerVersion="500" Compressed="yes"/>
 
 
     <!--  Aborts -->
@@ -19,14 +19,18 @@
     <?endif?>
     <Condition Message="[AbortReason]">Installed or (not AbortReason)</Condition>
 
-    <Property Id="ROOTDRIVE" Value="C:\"/> <!-- prevent msi to chose the drive with most space left -->
+
+    <Property Id="ROOTDRIVE"                Value="C:\"/>  <!-- prevent msi to chose the drive with most space left -->
 
     <!-- Allow command line alias for Property  -->
     <SetProperty Id="INSTALLDIR"  Value='[INSTALLFOLDER]'   Before="LaunchConditions">INSTALLFOLDER</SetProperty>
     <!-- Old configdir  -->
     <SetProperty Id="OCONFIGDIR"  Value='C:\$(var.PRODUCT)' Before="LaunchConditions">1</SetProperty>
     <!-- MINION_CONFIG implies MOVE_CONF  -->
-    <SetProperty Id="MOVE_CONF" Value='1'                 Before="LaunchConditions">MINION_CONFIG</SetProperty>
+    <SetProperty Id="MOVE_CONF" Value='1'                   Before="LaunchConditions">MINION_CONFIG</SetProperty>
+    <!-- MINION_CONFIG implies REMOVE_CONFIG  -->
+    <SetProperty Id="REMOVE_CONFIG" Value='1'               Before="LaunchConditions">MINION_CONFIG</SetProperty>
+
 
     <!-- Search for C salt config minion file-->
     <Property Id="C_SALT_CONF_MINION_EXISTS">
@@ -35,7 +39,7 @@
       </DirectorySearch>
     </Property>
 
-    <!-- Search registry for previous msi and Nullsoft installs, assumes Nullsoft writes to 32bit registry-->
+    <!-- Search registry for previous msi and Nullsoft install dirs, assumes Nullsoft writes to 32bit registry-->
     <Property Id="PINSTALLDIR">
       <!-- C:\Program Files\Salt Project\Salt -->
       <!-- better-name for root_dir is installdir -->
@@ -47,8 +51,13 @@
       <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="config_dir" Win64="$(var.WIN64)" Type="raw" Id="rsc"/>
       <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="config_dir" Win64="no"           Type="raw" Id="rsc_nullsoft"/>
     </Property>
+    <Property Id="REMOVE_CONFIG">
+      <!-- Read from registry the intention to remove config  -->
+      <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="REMOVE_CONFIG" Win64="$(var.WIN64)" Type="raw" Id="rsrmc"/>
+      <RegistrySearch Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)" Name="REMOVE_CONFIG" Win64="no"           Type="raw" Id="rsrmc_nullsoft"/>
+    </Property>
 
-    <!-- Write registry (declare components)-->
+    <!-- Write registry (declare components) and delete on uninstall -->
     <Component Id="write_to_registry" Directory="TARGETDIR">
       <RegistryKey Root="HKLM" Key="SOFTWARE\$(var.MANUFACTURER)\$(var.PRODUCT)">
         <RegistryValue Name="root_dir"      Value="[INSTALLDIR]" Type="string"/> <!-- better-name for root_dir is installdir -->
@@ -61,43 +70,16 @@
       </RegistryKey>
     </Component>
 
-    <!--  Default directory layout, Admin could modify by setting properties.  -->
-    <!-- write INSTALLDIR instead of ROOTDIR -->
-    <!-- write INSTALLDIR instead of INSTALLFOLDER -->
-    <Directory Id='TARGETDIR' Name='SourceDir'>                   <!-- Fixed expression -->
-      <Directory Id="$(var.PROGRAMFILES)">                        <!-- C:\Program Files  or  C:\Program Files (x86) -->
-        <Directory Id='installparent' Name='$(var.MANUFACTURER)'>
-          <Directory Id='INSTALLDIR' Name='$(var.PRODUCT)'/>      <!-- Admin could modify  -->
-        </Directory>
-      </Directory>
-      <Directory Id="CommonAppDataFolder">                        <!-- C:\ProgramData -->
-        <Directory Id="configparent" Name="$(var.MANUFACTURER)">
-          <Directory Id="CONFIGDIR" Name="$(var.PRODUCT)">        <!-- Admin could modify  -->
-            <Directory Id="confdir" Name="conf" >
-              <Component Id='Config.component' Win64="$(var.WIN64)">
-                <File Id='Config.fileID' Source="$(var.CONFIG)" KeyPath='yes'/>
-              </Component>
-            </Directory>
-          </Directory>
-        </Directory>
-      </Directory>
-    </Directory>
-    <!-- Set INSTALLDIR to previous install (before GUI and before install sequence) -->
-    <SetProperty Id="INSTALLDIR" Value='[PINSTALLDIR]' Sequence="both"    Before="CostFinalize" Action="sid1">PINSTALLDIR</SetProperty>
-    <!-- Set CONFIGDIR to previous install or old layout  (only before install sequence) -->
-    <SetProperty Id="CONFIGDIR"  Value='[PCONFIGDIR]'  Sequence="execute" Before="CostFinalize" Action="scd1">not MOVE_CONF and     PCONFIGDIR</SetProperty>
-    <SetProperty Id="CONFIGDIR"  Value='[OCONFIGDIR]'  Sequence="execute" Before="CostFinalize" Action="scd2">not MOVE_CONF and not PCONFIGDIR</SetProperty>
-
 
     <!--  Assemble the Features  -->
-    <Feature Id='Complete'>
+    <Feature Id="Complete">
       <ComponentGroupRef Id="DiscoveredFiles" />
-      <ComponentRef      Id='Config.component'/>
-      <ComponentRef      Id='write_to_registry'/>
+      <ComponentRef      Id="Config.component"/>
+      <ComponentRef      Id="write_to_registry"/>
     </Feature>
-    <Feature Id='remove_all_config_on_uninstall' Level='0'>
+    <Feature Id="remove_all_config_on_uninstall" Level="0">
       <Condition Level="1">MINION_CONFIG or (REMOVE ~= "ALL")</Condition>
-      <ComponentRef Id='write_to_registry_to_remove_all_config_on_uninstall'/>
+      <ComponentRef Id="write_to_registry_to_remove_all_config_on_uninstall"/>
     </Feature>
 
 
@@ -109,13 +91,13 @@
       This sequence may be left out.
       -->
     <InstallUISequence>
-      <Custom Action='ReadConfig_IMCAC'       Before='LaunchConditions'  >NOT Installed</Custom>
+      <Custom Action="ReadConfig_IMCAC"       Before="LaunchConditions"  >NOT Installed</Custom>
     </InstallUISequence>
 
 
-    <!--  The Install Sequence  -->
+    <!--  The Install Sequence (aka server side) -->
     <!--
-      Run with localsystem privilege (aka server side).
+      Run with localsystem privilege .
       https://docs.microsoft.com/en-us/windows/win32/msi/suggested-installexecutesequence
       If the UI sequence took place, some (non-UI) actions can be are repeated (e.g. CostInitialize).
 
@@ -128,31 +110,21 @@
         You may modify the system.
       -->
     <InstallExecuteSequence>
-      <Custom Action='ReadConfig_IMCAC'       Before='LaunchConditions'  >NOT Installed</Custom>
-      <Custom Action='WriteConfig_CADH'
-              Before='WriteConfig_DECAC'                                 >NOT Installed</Custom>
-      <Custom Action='WriteConfig_DECAC'      After='InstallFiles'       >NOT Installed</Custom>
+      <Custom Action="ReadConfig_IMCAC"       Before="LaunchConditions"  >NOT Installed</Custom>
+      <Custom Action="WriteConfig_CADH"
+              Before="WriteConfig_DECAC"                                 >NOT Installed</Custom>
+      <Custom Action="WriteConfig_DECAC"      After="InstallFiles"       >NOT Installed</Custom>
     </InstallExecuteSequence>
 
 
     <!--  The Custom Actions  -->
-    <Binary Id='CustomAction01' SourceFile='CustomAction01\CustomAction01.CA.dll'/>
+    <Binary Id="CustomAction01" SourceFile="CustomAction01\CustomAction01.CA.dll"/>
 
     <!--      IMMEDIATE CUSTOM ACTION (IMCAC) run before the transaction and should not modify the system -->
-    <CustomAction
-      Id="ReadConfig_IMCAC"
-      DllEntry='ReadConfig_IMCAC'
-      BinaryKey='CustomAction01'
-      Execute='firstSequence'/>
+    <CustomAction Id="ReadConfig_IMCAC" DllEntry="ReadConfig_IMCAC" BinaryKey="CustomAction01" Execute="firstSequence"/>
 
     <!--      DEFERRED CUSTOM ACTION (DECAC) runs in a transaction and may modify the system -->
-    <CustomAction
-      Id="WriteConfig_DECAC"
-      DllEntry='WriteConfig_DECAC'
-      BinaryKey='CustomAction01'
-      Execute='deferred'
-      Return='check'
-      Impersonate='no'/>
+    <CustomAction Id="WriteConfig_DECAC" DllEntry="WriteConfig_DECAC" BinaryKey="CustomAction01" Execute="deferred" Return="check" Impersonate="no"/>
 
     <!--      Pass msi properties to the DEFERRED CUSTOM ACTION (DECAC)  -->
     <CustomAction
@@ -238,8 +210,36 @@
       </Dialog>
     </UI>
 
+  <!--  Default directory layout, Admin could modify by setting properties.  -->
+    <!-- write INSTALLDIR instead of INSTALLFOLDER -->
+    <!-- write CONFIGDIR  instead of ROOTDIR -->
+    <Directory Id="TARGETDIR" Name="SourceDir">                   <!-- Fixed expression. Location of the msi file -->
+      <Directory Id="$(var.PROGRAMFILES)">                        <!-- C:\Program Files  or  C:\Program Files (x86) -->
+        <Directory Id="installparent" Name="$(var.MANUFACTURER)">
+          <Directory Id="INSTALLDIR" Name="$(var.PRODUCT)"/>      <!-- Admin could modify  -->
+            <Directory Id="BINDIR"  Name="bin" />
+        </Directory>
+      </Directory>
+      <Directory Id="CommonAppDataFolder">                        <!-- C:\ProgramData -->
+        <Directory Id="configparent" Name="$(var.MANUFACTURER)">
+          <Directory Id="CONFIGDIR" Name="$(var.PRODUCT)">        <!-- Admin could modify  -->
+            <Directory Id="confdir" Name="conf" >
+              <Component Id="Config.component" Win64="$(var.WIN64)">
+                <File Id="Config.fileID" Source="$(var.CONFIG)" KeyPath="yes"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <!-- Set INSTALLDIR to previous install (before GUI and before install sequence) -->
+    <SetProperty Id="INSTALLDIR" Value="[PINSTALLDIR]" Sequence="both"    Before="CostFinalize" Action="sid1">PINSTALLDIR</SetProperty>
+    <!-- Set CONFIGDIR to previous install or old layout  (only before install sequence) -->
+    <SetProperty Id="CONFIGDIR"  Value="[PCONFIGDIR]"  Sequence="execute" Before="CostFinalize" Action="scd1">not MOVE_CONF and     PCONFIGDIR</SetProperty>
+    <SetProperty Id="CONFIGDIR"  Value="[OCONFIGDIR]"  Sequence="execute" Before="CostFinalize" Action="scd2">not MOVE_CONF and not PCONFIGDIR</SetProperty>
 
-    <!--  No cab  -->
-    <MediaTemplate EmbedCab="yes"/>
+
+    <!-- Do not create cab files -->
+    <MediaTemplate EmbedCab="yes" CompressionLevel="low" />
   </Product>
 </Wix>
