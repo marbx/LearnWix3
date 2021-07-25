@@ -81,8 +81,8 @@ namespace CustomAction01 {
             string CONFIGDIR_OLD = get_property_DECAC(session, "CONFIGDIR_OLD");
             string CONFIGDIR_NEW = get_property_DECAC(session, "CONFIGDIR_NEW");
             string MOVE_CONF = get_property_DECAC(session, "MOVE_CONF");
-            string configOld = CONFIGDIR_OLD + @"\" + "conf" + @"\" + "a.config";
-            string configNew = CONFIGDIR_NEW + @"\" + "conf" + @"\" + "a.config";
+            string configOld = CONFIGDIR_OLD + @"\" + "conf" + @"\" + "minion";
+            string configNew = CONFIGDIR_NEW + @"\" + "conf" + @"\" + "minion";
             session.Log("...configOld " + configOld);
             session.Log("...configNew " + configNew);
             if (MOVE_CONF == "1" && Directory.Exists(CONFIGDIR_OLD)) {

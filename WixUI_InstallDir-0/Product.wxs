@@ -47,7 +47,6 @@
 
       <Publish Dialog="VerifyReadyDlg"    Control="Back" Event="NewDialog" Value="ProductUIsettings" Order="1">NOT Installed</Publish>
 
-      <ProgressText Action="WriteConfig_DECAC">Configuring minion</ProgressText>
     </UI>
   </Fragment>
 
