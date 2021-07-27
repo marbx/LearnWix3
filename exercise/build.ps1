@@ -7,7 +7,7 @@ $MANUFACTURER   = "aaaManufacturer"
 $PRODUCT        = "aaaProduct"
 $VERSION        = "1.2.4"
 $DISCOVER_INSTALLDIR = ".\aaaProduct64bit", ".\aaaProduct32bit"
-$DISCOVER_CONFIGDIR  = ".\aaaCONFIGDIR"
+$DISCOVER_CONFIGDIR  = ".\aaaCONFIGDIR\conf"
 
 $msbuild = "C:\Program Files (x86)\MSBuild\14.0\"    # MSBuild only needed to compile C#
 
@@ -91,7 +91,7 @@ CheckExitCode
 Write-Host -ForegroundColor Yellow "Discovering  $DISCOVER_CONFIGDIR to components *.wxs"
 & "$($ENV:WIX)bin\heat" dir "$DISCOVER_CONFIGDIR" -out "Product-config-discovered-files.wxs" `
    -cg DiscoveredConfigFiles -var var.DISCOVER_CONFIGDIR `
-   -dr CONFIGDIR -t Product-discover-files.xsl `
+   -dr CONFDIR -t Product-discover-files.xsl `
    -nologo -indent 1 -gg -sfrag -sreg -suid -srd -ke -template fragment
 CheckExitCode
 

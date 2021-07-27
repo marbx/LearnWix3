@@ -24,8 +24,6 @@
 
     <!-- Allow command line alias for Property  -->
     <SetProperty Id="INSTALLDIR"  Value='[INSTALLFOLDER]'   Before="LaunchConditions">INSTALLFOLDER</SetProperty>
-    <!-- Old configdir  -->
-    <SetProperty Id="OCONFIGDIR"  Value='C:\$(var.PRODUCT)' Before="LaunchConditions">1</SetProperty>
     <!-- MINION_CONFIG implies MOVE_CONF  -->
     <SetProperty Id="MOVE_CONF" Value='1'                   Before="LaunchConditions">MINION_CONFIG</SetProperty>
     <!-- MINION_CONFIG implies REMOVE_CONFIG  -->
@@ -232,17 +230,14 @@
       <Directory Id="CommonAppDataFolder">                        <!-- C:\ProgramData -->
         <Directory Id="configparent" Name="$(var.MANUFACTURER)">
           <Directory Id="CONFIGDIR" Name="$(var.PRODUCT)">        <!-- Admin could modify  -->
-            <Directory Id="confdir" Name="conf" >
+            <Directory Id="CONFDIR" Name="conf" >
             </Directory>
           </Directory>
         </Directory>
       </Directory>
     </Directory>
-    <!-- Set INSTALLDIR to previous install (before GUI and before install sequence) -->
-    <SetProperty Id="INSTALLDIR" Value="[PINSTALLDIR]" Sequence="both"    Before="CostFinalize" Action="sid1">PINSTALLDIR</SetProperty>
-    <!-- Set CONFIGDIR to previous install or old layout  (only before install sequence) -->
-    <SetProperty Id="CONFIGDIR"  Value="[PCONFIGDIR]"  Sequence="execute" Before="CostFinalize" Action="scd1">not MOVE_CONF and     PCONFIGDIR</SetProperty>
-    <SetProperty Id="CONFIGDIR"  Value="[OCONFIGDIR]"  Sequence="execute" Before="CostFinalize" Action="scd2">not MOVE_CONF and not PCONFIGDIR</SetProperty>
+    <!-- Set CONFIGDIR to old layout  (only before install sequence) -->
+    <SetProperty Id="CONFIGDIR"  Value="C:\$(var.PRODUCT)"  Sequence="execute" Before="CostFinalize" Action="scd2">not MOVE_CONF</SetProperty>
 
 
     <!-- Do not create cab files -->
