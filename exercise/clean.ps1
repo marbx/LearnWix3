@@ -8,6 +8,6 @@ silentdelelete *.msi
 silentdelelete *.log
 silentdelelete *.wixpdb
 silentdelelete *.wixobj
-silentdelelete *-discovered-files.wxs
+silentdelelete Product-discovered-files*.wxs
 silentdelelete CustomAction01\*.dll
 silentdelelete CustomAction01\*.pdb

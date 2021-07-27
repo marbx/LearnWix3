@@ -2,4 +2,4 @@
 *.log
 *.wixpdb
 *.wixobj
-*-discovered-files.wxs
+Product-discovered-files*.wxs
