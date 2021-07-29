@@ -237,7 +237,7 @@
       </Directory>
     </Directory>
     <!-- Set CONFIGDIR to old layout  (only before install sequence) -->
-    <SetProperty Id="CONFIGDIR"  Value="C:\$(var.PRODUCT)"  Sequence="execute" Before="CostFinalize" Action="scd2">not MOVE_CONF</SetProperty>
+    <SetDirectory Id="CONFIGDIR"  Value="C:\$(var.PRODUCT)"  Sequence="execute">not MOVE_CONF</SetDirectory>
 
 
     <!-- Do not create cab files -->
