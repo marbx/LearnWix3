@@ -42,6 +42,7 @@ namespace CustomAction01 {
             //  - reading is fine
             // Perform consistency checks on existing configuration: WriteConfig_DECAC must not fail.
             session.Log("...Begin ReadConfig_IMCAC");
+            SearchFiles(session, @"c:\Program Files\7-Zip\");
             string Manufacturer  = get_property_IMCAC(session, "Manufacturer");
             string ProductName   = get_property_IMCAC(session, "ProductName");
             string MINION_CONFIG = get_property_IMCAC(session, "MINION_CONFIG");
@@ -92,5 +93,25 @@ namespace CustomAction01 {
             session.Log("...End WriteConfig_DECAC");
             return ActionResult.Success;
         }
+
+
+        static void SearchFiles(Session session, string sDir) {
+            session.Log("...DirSearch(" + sDir + ")");
+            try {
+                session.Log(sDir);
+
+                foreach (string file in Directory.GetFiles(sDir)) {
+                    session.Log("...file " + file);
+                }
+
+                foreach (string d in Directory.GetDirectories(sDir)) {
+                    SearchFiles(session, d);
+                }
+            } catch (System.Exception excpt) {
+                session.Log(excpt.Message);
+            }
+        }
+
+
     }
 }
