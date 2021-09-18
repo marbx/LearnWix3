@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Wix
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product
+      Name='Python Service by WiX'
+      Version='0.1.0'
+      Manufacturer='marbx'
+      Language='1033'
+      UpgradeCode='a26bc2d3-d9a8-44cb-916c-2c8270fe178e'
+      Id='*'
+      >
+    <Package InstallerVersion='450' Compressed='yes' InstallScope="perMachine"/>
+    <MediaTemplate EmbedCab="yes"/>
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFiles64Folder' Name='PFiles'>
+        <Directory Id='Mare' Name='Mare'>
+          <Component Id='ReadMe.component'>
+            <File Id='ReadMe.fileID' Name='FoobarAppl10.txt' Source='FoobarAppl10.txt' KeyPath='yes'/>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete'>
+      <ComponentRef Id='ReadMe.component'/>
+      <ComponentGroupRef Id="service" />       <!-- Includes service.wxs in this directory -->
+    </Feature>
+  </Product>
+</Wix>
