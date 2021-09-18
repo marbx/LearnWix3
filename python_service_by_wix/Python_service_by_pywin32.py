@@ -3,15 +3,11 @@ import win32service
 import win32event
 import servicemanager
 import socket
-
-
-
+import sys
 
 class AppServerSvc (win32serviceutil.ServiceFramework):
-    _svc_name_ = "Python_service_by_pywin32"
-    _svc_display_name_ = "Python_service_by_pywin32"
-    STRFTIME = '%Y-%m-%dT%H:%M:%S'
-    run = 0
+    _svc_name_ = "TestService"
+    _svc_display_name_ = "Test Service"
 
     def __init__(self,args):
         win32serviceutil.ServiceFramework.__init__(self,args)
@@ -28,12 +24,14 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                               servicemanager.PYS_SERVICE_STARTED,
                               (self._svc_name_,''))
-        #self.main()
+        self.main()
 
 
     def main(self):
         import time
         import datetime
+        STRFTIME = '%Y-%m-%dT%H:%M:%S'
+        run = 0
 
         while self.run < 900:
             self.run += 1
@@ -43,5 +41,16 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 f.write(f"{now}\n")
             time.sleep(5)
 
+
 if __name__ == '__main__':
-    win32serviceutil.HandleCommandLine(AppServerSvc)
+   if len(sys.argv) > 1:
+       # Called by Windows shell. Handling arguments such as: Install, Remove, etc.
+       win32serviceutil.HandleCommandLine(AppServerSvc)
+   else:
+       # Called by Windows Service. Initialize the service to communicate with the system operator
+       servicemanager.Initialize()
+       servicemanager.PrepareToHostSingle(AppServerSvc)
+       servicemanager.StartServiceCtrlDispatcher()
+
+
+
